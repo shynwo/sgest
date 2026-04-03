@@ -36,7 +36,10 @@ def _rate_limited(bucket: dict, key: str, limit: int, window_sec: int, consume=F
     values = [t for t in bucket.get(key, []) if now - t < window_sec]
     if consume:
         values.append(now)
-    bucket[key] = values
+    if values:
+        bucket[key] = values
+    else:
+        bucket.pop(key, None)
     return len(values) >= limit
 
 def _current_user_ip():
@@ -210,13 +213,32 @@ def _delete_avatar_file(rel_path: str):
     except Exception:
         pass
 
-def _con_biz():
-    db_dir = os.path.expanduser('~/stockdash/data')
-    os.makedirs(db_dir, exist_ok=True)
-    db_path = os.path.join(db_dir, 'business.db')
-    con = sqlite3.connect(db_path)
+
+def _stockdash_data_dir() -> str:
+    d = os.path.join(os.path.expanduser("~"), "stockdash", "data")
+    os.makedirs(d, exist_ok=True)
+    return d
+
+
+def _sqlite_connect(db_path: str, *, timeout: float = 30.0) -> sqlite3.Connection:
+    """Connexion SQLite homogène : Row, clés étrangères, WAL (lectures concurrentes), timeouts."""
+    os.makedirs(os.path.dirname(db_path), exist_ok=True)
+    con = sqlite3.connect(db_path, timeout=timeout)
     con.row_factory = sqlite3.Row
     con.execute("PRAGMA foreign_keys=ON")
+    try:
+        con.execute("PRAGMA journal_mode=WAL")
+        con.execute("PRAGMA synchronous=NORMAL")
+        con.execute("PRAGMA cache_size=-8000")
+        con.execute("PRAGMA temp_store=MEMORY")
+    except sqlite3.Error:
+        pass
+    return con
+
+
+def _con_biz():
+    db_path = os.path.join(_stockdash_data_dir(), "business.db")
+    con = _sqlite_connect(db_path)
     con.execute("""
     CREATE TABLE IF NOT EXISTS gain_events(
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -1090,7 +1112,7 @@ def _orders_list(limit=60):
         con.close()
 
 def _catalog_files_root():
-    root = os.path.expanduser("~/stockdash/data/catalog_files")
+    root = os.path.join(_stockdash_data_dir(), "catalog_files")
     os.makedirs(root, exist_ok=True)
     return root
 
@@ -3045,12 +3067,8 @@ def server_error(e): return render_template("500.html", title="500 – Erreur in
 
 # ---- DB helper + migration douce (min_qty) ----
 def _con_3d():
-    import os, sqlite3
-    db_dir = os.path.expanduser('~/stockdash/data')
-    os.makedirs(db_dir, exist_ok=True)
-    db_path = os.path.join(db_dir, 'impression3d.db')
-    con = sqlite3.connect(db_path)
-    con.row_factory = sqlite3.Row
+    db_path = os.path.join(_stockdash_data_dir(), "impression3d.db")
+    con = _sqlite_connect(db_path)
     con.execute("""
     CREATE TABLE IF NOT EXISTS stock_3d(
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -3146,100 +3164,8 @@ def inv_3d_del(item_id:int):
     flash("Article supprimé.", "success")
     return redirect(url_for("inv_3d_page"))
 
-# === Broderie (même logique que Impression 3D) ===
-def _con_bro_old():
-    import os, sqlite3
-    db_dir = os.path.expanduser('~/stockdash/data')
-    os.makedirs(db_dir, exist_ok=True)
-    db_path = os.path.join(db_dir, 'broderie.db')
-    con = sqlite3.connect(db_path)
-    con.row_factory = sqlite3.Row
-    con.execute("""
-    CREATE TABLE IF NOT EXISTS stock_3d(
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        material TEXT NOT NULL,
-        color    TEXT NOT NULL,
-        ref      TEXT NOT NULL,
-        price    REAL DEFAULT 0,
-        qty      INTEGER DEFAULT 0,
-        name     TEXT
-    );
-    """)
-    con.execute("""
-    CREATE TABLE IF NOT EXISTS stock_bro_alerts(
-        item_id   INTEGER PRIMARY KEY,
-        threshold INTEGER NOT NULL DEFAULT 0
-    );
-    """)
-    return con
-# ==== BRODERIE (auto-added) ===============================================
-def _con_bro_old():
-    import os, sqlite3
-    db_dir = os.path.expanduser('~/stockdash/data')
-    os.makedirs(db_dir, exist_ok=True)
-    db_path = os.path.join(db_dir, 'broderie.db')
-    con = sqlite3.connect(db_path)
-    con.row_factory = sqlite3.Row
-    con.execute("""
-    CREATE TABLE IF NOT EXISTS stock_bro(
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      material TEXT NOT NULL,
-      color    TEXT NOT NULL,
-      ref      TEXT NOT NULL,
-      price    REAL DEFAULT 0,
-      qty      INTEGER DEFAULT 0,
-      name     TEXT,
-      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-    );
-    """)
-    con.execute("""
-    CREATE TABLE IF NOT EXISTS stock_bro_alerts(
-      item_id INTEGER PRIMARY KEY,
-      threshold INTEGER NOT NULL DEFAULT 0,
-      FOREIGN KEY(item_id) REFERENCES stock_bro(id) ON DELETE CASCADE
-    );
-    """)
-    return con
-
-# ==== /BRODERIE =============================================================
-
-
-
-
-
 # <<BRODERIE-START>>
 # Broderie: DB + routes + API alerts
-
-def _con_bro_old():
-    import os, sqlite3
-    db_dir = os.path.expanduser('~/stockdash/data')
-    os.makedirs(db_dir, exist_ok=True)
-    db_path = os.path.join(db_dir, 'broderie.db')
-    con = sqlite3.connect(db_path)
-    con.row_factory = sqlite3.Row
-    con.execute("""
-    CREATE TABLE IF NOT EXISTS stock_bro(
-        id       INTEGER PRIMARY KEY AUTOINCREMENT,
-        name     TEXT,
-        ref      TEXT,
-        material TEXT,
-        color    TEXT,
-        price    REAL DEFAULT 0,
-        qty      INTEGER DEFAULT 0
-    );
-    """)
-    con.execute("""
-    CREATE TABLE IF NOT EXISTS stock_bro_alerts(
-        id        INTEGER PRIMARY KEY AUTOINCREMENT,
-        item_id   INTEGER UNIQUE NOT NULL,
-        threshold INTEGER NOT NULL DEFAULT 0
-    );
-    """)
-    return con
-
-
-
-
 
 
 @app.get('/api/broderie/alerts', endpoint='bro_alerts_api')
@@ -3259,7 +3185,6 @@ def bro_alerts_api():
 
 # ==== BRODERIE AUTO START ====
 # Bloc généré automatiquement : logique identique à la 3D, base dédiée broderie.db
-from flask import request, redirect, url_for, flash, render_template
 
 def _ensure_bro_ref_not_unique(con):
     """
@@ -3349,12 +3274,8 @@ def _ensure_bro_ref_not_unique(con):
         con.execute("PRAGMA foreign_keys=ON")
 
 def _con_bro():
-    import os, sqlite3
-    db_dir = os.path.expanduser('~/stockdash/data')
-    os.makedirs(db_dir, exist_ok=True)
-    db_path = os.path.join(db_dir, 'broderie.db')
-    con = sqlite3.connect(db_path)
-    con.row_factory = sqlite3.Row
+    db_path = os.path.join(_stockdash_data_dir(), "broderie.db")
+    con = _sqlite_connect(db_path)
 
     # Schéma des articles
     con.execute("""
