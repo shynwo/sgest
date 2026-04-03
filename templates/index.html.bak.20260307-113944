@@ -1,0 +1,6 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container py-3">
+  <div class="alert alert-secondary">Bienvenue sur le dashboard.</div>
+</div>
+{% endblock %}

@@ -1,0 +1,20 @@
+{# Modal listant toutes les alertes #}
+<div class="modal fade" id="alertsModal" tabindex="-1" aria-labelledby="alertsModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg modal-fullscreen-sm-down">
+    <div class="modal-content bg-dark border">
+      <div class="modal-header">
+        <h5 class="modal-title" id="alertsModalLabel">Alertes de stock</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fermer"></button>
+      </div>
+      <div class="modal-body">
+        <div id="alerts-modal-body">
+          <div class="text-muted">Chargement…</div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <a href="/stock/all" class="btn btn-outline-light">Voir le stock complet</a>
+        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Fermer</button>
+      </div>
+    </div>
+  </div>
+</div>

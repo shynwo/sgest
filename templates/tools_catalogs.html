@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container py-3">
+  {% with messages = get_flashed_messages(with_categories=True) %}
+    {% if messages %}
+      {% for cat, msg in messages %}
+        <div class="alert alert-{{ 'warning' if cat=='warning' else 'success' }} border-0" role="alert">{{ msg }}</div>
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
+
+  <div class="d-flex justify-content-between align-items-center gap-2 mb-3">
+    <div>
+      <h2 class="h4 mb-1">Catalogues Boutique</h2>
+      <p class="text-secondary mb-0">Base interne pour fiches produit, fichiers, photos et publication client.</p>
+    </div>
+  </div>
+
+  <div class="row g-3">
+    <div class="col-12 col-xl-4">
+      <div class="card h-100">
+        <div class="card-body">
+          <h5 class="card-title mb-3">Nouveau catalogue</h5>
+          <form method="post" action="{{ url_for('tools_catalogs_add') }}" class="row g-3">
+            <input type="hidden" name="_csrf" value="{{ csrf_token() }}">
+            <div class="col-12">
+              <label class="form-label">Nom du catalogue</label>
+              <input name="name" class="form-control" placeholder="Ex: Boutique Etsy Broderie" required>
+            </div>
+            <div class="col-12">
+              <label class="form-label">Type de business</label>
+              <input name="business_type" class="form-control" list="catalog-business-types" placeholder="Broderie / Impression 3D / Autre" required>
+              <datalist id="catalog-business-types">
+                <option value="Broderie"></option>
+                <option value="Impression 3D"></option>
+                <option value="Textile"></option>
+                <option value="Goodies"></option>
+                <option value="Autre"></option>
+              </datalist>
+            </div>
+            <div class="col-12">
+              <label class="form-label">Description</label>
+              <textarea name="description" rows="3" class="form-control" placeholder="Objectif, canal de vente, style..."></textarea>
+            </div>
+            <div class="col-12 d-grid">
+              <button class="btn btn-primary" type="submit"><i class="bi bi-plus-circle me-2"></i>Creer le catalogue</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-12 col-xl-8">
+      <div class="card h-100">
+        <div class="card-body">
+          <h5 class="card-title mb-3">Mes catalogues</h5>
+          {% if catalogs %}
+          <div class="row g-2">
+            {% for c in catalogs %}
+            <div class="col-12 col-md-6">
+              <div class="catalog-card h-100">
+                <div class="d-flex justify-content-between align-items-start gap-2">
+                  <div>
+                    <div class="small text-secondary">{{ c.business_type }}</div>
+                    <div class="fw-semibold">{{ c.name }}</div>
+                  </div>
+                  <span class="badge {{ 'text-bg-success' if c.is_public else 'text-bg-secondary' }}">{{ 'Public' if c.is_public else 'Interne' }}</span>
+                </div>
+                <div class="small text-secondary mt-2">{{ c.description or 'Aucune description.' }}</div>
+                <div class="d-flex justify-content-between align-items-center mt-3">
+                  <span class="small text-secondary">{{ c.items_count }} fiche(s) | {{ c.files_count }} fichier(s)</span>
+                  <a href="{{ url_for('tools_catalog_detail_page', catalog_id=c.id) }}" class="btn btn-sm btn-outline-primary">Ouvrir</a>
+                </div>
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+          {% else %}
+          <div class="text-secondary">Aucun catalogue pour le moment.</div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+.catalog-card{
+  border:1px solid rgba(148,163,184,.25);
+  border-radius:12px;
+  background:rgba(255,255,255,.03);
+  padding:.8rem;
+}
+</style>
+{% endblock %}

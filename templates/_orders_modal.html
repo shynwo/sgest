@@ -1,0 +1,27 @@
+<div class="modal fade" id="ordersModal" tabindex="-1" aria-labelledby="ordersModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg">
+    <div class="modal-content bg-dark border">
+      <div class="modal-header">
+        <h5 class="modal-title" id="ordersModalLabel"><i class="bi bi-envelope me-2"></i>Commandes & notifications</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fermer"></button>
+      </div>
+      <div class="modal-body">
+        <div class="d-flex justify-content-between align-items-center gap-2 mb-2">
+          <div class="small text-secondary">
+            Webhooks:
+            <code>/webhooks/orders/etsy</code> |
+            <code>/webhooks/orders/vinted</code>
+          </div>
+          <button type="button" id="ordersMarkAllRead" class="btn btn-sm btn-outline-secondary">Tout marquer lu</button>
+        </div>
+        <div id="ordersModalBody" class="small text-body">
+          <div class="text-muted">Chargement...</div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <a class="btn btn-outline-light" href="/outils/gain"><i class="bi bi-cash-coin me-2"></i>Voir Gain</a>
+        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Fermer</button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,249 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container py-3">
+  {% with messages = get_flashed_messages(with_categories=True) %}
+    {% if messages %}
+      {% for cat, msg in messages %}
+        <div class="alert alert-{{ 'warning' if cat == 'warning' else 'success' }} border-0" role="alert">{{ msg }}</div>
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
+
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <div>
+      <h2 class="h4 mb-1">Profil</h2>
+      <div class="small text-secondary">Compte connecte: <strong>{{ current_user.username }}</strong></div>
+    </div>
+    <a href="/system" class="btn btn-outline-secondary btn-sm">Retour Systeme</a>
+  </div>
+
+  <div class="row g-3">
+    <div class="col-12 col-xl-6">
+      <div class="card h-100">
+        <div class="card-body">
+          <h5 class="card-title mb-3"><i class="bi bi-shield-lock me-2"></i>Securite compte</h5>
+          {% if default_password %}
+            <div class="alert alert-warning" role="alert">Mot de passe par defaut detecte. Change-le maintenant.</div>
+          {% endif %}
+          <form method="post" action="{{ url_for('system_profile_password_update') }}" class="row g-3">
+            <input type="hidden" name="_csrf" value="{{ csrf_token() }}">
+            <div class="col-12">
+              <label class="form-label">Mot de passe actuel</label>
+              <input type="password" name="current_password" class="form-control" autocomplete="current-password" required>
+            </div>
+            <div class="col-12 col-md-6">
+              <label class="form-label">Nouveau mot de passe</label>
+              <input type="password" name="new_password" class="form-control" autocomplete="new-password" required>
+            </div>
+            <div class="col-12 col-md-6">
+              <label class="form-label">Confirmer</label>
+              <input type="password" name="confirm_password" class="form-control" autocomplete="new-password" required>
+            </div>
+            <div class="col-12">
+              <div class="small text-secondary">Requis: 12+ caracteres, 1 majuscule, 1 minuscule, 1 chiffre, 1 special.</div>
+            </div>
+            <div class="col-12">
+              <button type="submit" class="btn btn-primary">
+                <i class="bi bi-check2-circle me-2"></i>Mettre a jour le mot de passe
+              </button>
+            </div>
+          </form>
+
+          <hr class="my-3">
+
+          <h6 class="mb-2"><i class="bi bi-envelope me-2"></i>Email de recuperation</h6>
+          <form method="post" action="{{ url_for('system_profile_recovery_email_update') }}" class="row g-2">
+            <input type="hidden" name="_csrf" value="{{ csrf_token() }}">
+            <div class="col-12">
+              <input type="email" name="recovery_email" class="form-control" placeholder="email@exemple.com" value="{{ current_user.email or '' }}">
+            </div>
+            <div class="col-12">
+              <button type="submit" class="btn btn-outline-primary btn-sm">Enregistrer l'email</button>
+            </div>
+            <div class="col-12">
+              <div class="small text-secondary">Cet email sert pour la reinitialisation de mot de passe.</div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-12 col-xl-6">
+      <div class="card h-100">
+        <div class="card-body">
+          <h5 class="card-title mb-3"><i class="bi bi-palette me-2"></i>Personnalisation</h5>
+          <form method="post" action="{{ url_for('system_profile_theme_update') }}" class="row g-3">
+            <input type="hidden" name="_csrf" value="{{ csrf_token() }}">
+            <div class="col-12 col-md-6">
+              <label class="form-label">Couleur primaire</label>
+              <input type="color" id="theme-color-picker" class="form-control form-control-color" value="{{ theme_color }}">
+            </div>
+            <div class="col-12 col-md-6">
+              <label class="form-label">HEX primaire</label>
+              <input type="text" name="theme_color" id="theme-color-input" class="form-control" value="{{ theme_color }}" pattern="#[0-9a-fA-F]{6}">
+            </div>
+            <div class="col-12 col-md-6">
+              <label class="form-label">Couleur secondaire</label>
+              <input type="color" id="theme-color-picker-2" class="form-control form-control-color" value="{{ theme_color_secondary }}">
+            </div>
+            <div class="col-12 col-md-6">
+              <label class="form-label">HEX secondaire</label>
+              <input type="text" name="theme_color_secondary" id="theme-color-input-2" class="form-control" value="{{ theme_color_secondary }}" pattern="#[0-9a-fA-F]{6}">
+            </div>
+            <div class="col-12">
+              <label class="form-label d-block mb-2">Ambiances rapides</label>
+              <div class="d-flex flex-wrap gap-2">
+                <button type="button" class="btn btn-sm btn-outline-primary theme-preset" data-p1="#14b8a6" data-p2="#22d3ee">Ocean</button>
+                <button type="button" class="btn btn-sm btn-outline-primary theme-preset" data-p1="#f59e0b" data-p2="#f97316">Sunset</button>
+                <button type="button" class="btn btn-sm btn-outline-primary theme-preset" data-p1="#8b5cf6" data-p2="#ec4899">Neon</button>
+                <button type="button" class="btn btn-sm btn-outline-primary theme-preset" data-p1="#22c55e" data-p2="#84cc16">Nature</button>
+              </div>
+            </div>
+            <div class="col-12">
+              <div id="theme-preview" class="rounded-3 border p-3" style="background: linear-gradient(135deg, {{ theme_color }}, {{ theme_color_secondary }}); border-color: rgba(255,255,255,.2)!important;">
+                <div class="fw-semibold text-white">Apercu du theme</div>
+                <div class="small text-white-50">Le menu, les cartes et les boutons suivront cette palette.</div>
+              </div>
+            </div>
+            <div class="col-12">
+              <button type="submit" class="btn btn-primary btn-sm">Appliquer le theme global</button>
+            </div>
+          </form>
+
+          <hr class="my-3">
+
+          <h6 class="mb-2"><i class="bi bi-person-circle me-2"></i>Photo de profil</h6>
+          <div class="d-flex align-items-center justify-content-between flex-wrap gap-3 mb-2">
+            <div class="profile-avatar-wrap">
+              <img src="{{ current_user_avatar_url }}" alt="Avatar" class="profile-avatar rounded-circle">
+              <span class="profile-role-badge badge rounded-pill" data-role="{{ current_user_role_label|lower }}">
+                {{ current_user_role_label }}
+              </span>
+            </div>
+            <div class="small text-secondary">PNG, JPG, WEBP, GIF. Max 25 Mo.</div>
+          </div>
+          <div class="d-flex flex-wrap align-items-end gap-2">
+            <form method="post" action="{{ url_for('system_profile_avatar_update') }}" class="d-flex flex-wrap align-items-end gap-2 flex-grow-1" enctype="multipart/form-data">
+              <input type="hidden" name="_csrf" value="{{ csrf_token() }}">
+              <div class="flex-grow-1" style="min-width: 210px;">
+                <input type="file" name="avatar" accept="image/*" class="form-control form-control-sm">
+              </div>
+              <button type="submit" class="btn btn-outline-primary btn-sm">Mettre a jour</button>
+            </form>
+            <form method="post" action="{{ url_for('system_profile_avatar_reset') }}" class="d-inline">
+              <input type="hidden" name="_csrf" value="{{ csrf_token() }}">
+              <button type="submit" class="btn btn-outline-secondary btn-sm">Par defaut</button>
+            </form>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    {% if is_admin %}
+    <div class="col-12">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title mb-3"><i class="bi bi-people me-2"></i>Comptes utilisateurs</h5>
+          <form method="post" action="{{ url_for('system_profile_users_add') }}" class="row g-2 mb-3">
+            <input type="hidden" name="_csrf" value="{{ csrf_token() }}">
+            <div class="col-12 col-md-3">
+              <input name="username" class="form-control" placeholder="username" required>
+            </div>
+            <div class="col-12 col-md-3">
+              <input name="email" type="email" class="form-control" placeholder="email (optionnel)">
+            </div>
+            <div class="col-12 col-md-3">
+              <input name="password" type="password" class="form-control" placeholder="mot de passe initial" required>
+            </div>
+            <div class="col-6 col-md-2">
+              <select name="role" class="form-select">
+                <option value="user">User</option>
+                <option value="admin">Admin</option>
+              </select>
+            </div>
+            <div class="col-6 col-md-1 d-grid">
+              <button type="submit" class="btn btn-primary btn-sm">Creer</button>
+            </div>
+          </form>
+
+          <div class="table-responsive">
+            <table class="table table-sm align-middle mb-0">
+              <thead>
+                <tr>
+                  <th>Utilisateur</th>
+                  <th>Email</th>
+                  <th>Role</th>
+                  <th>Actif</th>
+                  <th>Maj</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for u in users %}
+                <tr>
+                  <td>{{ u.username }}</td>
+                  <td>{{ u.email or '-' }}</td>
+                  <td>{{ u.role }}</td>
+                  <td>{{ 'Oui' if u.is_active else 'Non' }}</td>
+                  <td>{{ u.updated_at }}</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endif %}
+  </div>
+</div>
+<script>
+(() => {
+  const picker1 = document.getElementById("theme-color-picker");
+  const input1 = document.getElementById("theme-color-input");
+  const picker2 = document.getElementById("theme-color-picker-2");
+  const input2 = document.getElementById("theme-color-input-2");
+  const preview = document.getElementById("theme-preview");
+  const presets = document.querySelectorAll(".theme-preset");
+  if (!picker1 || !input1 || !picker2 || !input2) return;
+
+  const isHex = (v) => /^#[0-9a-fA-F]{6}$/.test(String(v || "").trim());
+  const refreshPreview = () => {
+    if (!preview) return;
+    const p1 = isHex(input1.value) ? input1.value : picker1.value;
+    const p2 = isHex(input2.value) ? input2.value : picker2.value;
+    preview.style.background = `linear-gradient(135deg, ${p1}, ${p2})`;
+  };
+
+  picker1.addEventListener("input", () => { input1.value = picker1.value; refreshPreview(); });
+  input1.addEventListener("input", () => {
+    const v = String(input1.value || "").trim();
+    if (isHex(v)) picker1.value = v;
+    refreshPreview();
+  });
+
+  picker2.addEventListener("input", () => { input2.value = picker2.value; refreshPreview(); });
+  input2.addEventListener("input", () => {
+    const v = String(input2.value || "").trim();
+    if (isHex(v)) picker2.value = v;
+    refreshPreview();
+  });
+
+  presets.forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const p1 = btn.getAttribute("data-p1");
+      const p2 = btn.getAttribute("data-p2");
+      if (isHex(p1) && isHex(p2)) {
+        picker1.value = p1;
+        input1.value = p1;
+        picker2.value = p2;
+        input2.value = p2;
+        refreshPreview();
+      }
+    });
+  });
+
+  refreshPreview();
+})();
+</script>
+{% endblock %}

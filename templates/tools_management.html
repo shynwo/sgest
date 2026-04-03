@@ -1,0 +1,355 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container py-3">
+  {% with messages = get_flashed_messages(with_categories=True) %}
+    {% if messages %}
+      {% for cat, msg in messages %}
+        <div class="alert alert-{{ 'warning' if cat == 'warning' else 'success' }} border-0" role="alert">{{ msg }}</div>
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
+
+  <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+    <div>
+      <h2 class="h4 mb-1">Gestion sur mesure</h2>
+      <div class="text-secondary small">Cree ton propre stock pour n'importe quel business (champs, variantes, seuils, export).</div>
+    </div>
+    {% if active_module %}
+      <a class="btn btn-outline-secondary btn-sm" href="{{ url_for('tools_custom_export_csv', module_id=active_module.id) }}">
+        <i class="bi bi-download me-1"></i>Export CSV
+      </a>
+    {% endif %}
+  </div>
+
+  <div class="row g-3">
+    <div class="col-12 col-xl-4">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title mb-3">Nouvelle gestion</h5>
+          <form method="post" action="{{ url_for('tools_custom_module_add') }}" class="row g-2">
+            <input type="hidden" name="_csrf" value="{{ csrf_token() }}">
+            <div class="col-12">
+              <label class="form-label">Nom</label>
+              <input name="name" class="form-control" placeholder="Ex: Flocage, Goodies, Savonnerie..." required>
+            </div>
+            <div class="col-12 col-md-5">
+              <label class="form-label">Icone (option)</label>
+              <input name="icon" class="form-control" placeholder="bi-boxes">
+            </div>
+            <div class="col-12 col-md-7">
+              <label class="form-label">Description</label>
+              <input name="description" class="form-control" placeholder="Type de gestion">
+            </div>
+            <div class="col-12">
+              <button class="btn btn-primary btn-sm" type="submit">
+                <i class="bi bi-plus-circle me-1"></i>Creer
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <div class="card mt-3">
+        <div class="card-body">
+          <h5 class="card-title mb-3">Mes gestions</h5>
+          {% if modules %}
+            <div class="d-grid gap-2">
+              {% for m in modules %}
+                <div class="module-pill p-2 rounded {% if active_module and m.id == active_module.id %}module-pill-active{% endif %}">
+                  <div class="d-flex justify-content-between align-items-center gap-2">
+                    <a class="text-decoration-none flex-grow-1" href="{{ url_for('tools_custom_stock_page', m=m.id) }}">
+                      <div class="fw-semibold">{{ m.name }}</div>
+                      <div class="small text-secondary">
+                        {{ m.items_count }} refs | {{ m.fields_count }} champs | {{ '%.2f'|format(m.units_total or 0) }} unites
+                      </div>
+                    </a>
+                    <form method="post" action="{{ url_for('tools_custom_module_delete', module_id=m.id) }}" onsubmit="return confirm('Supprimer cette gestion ?');">
+                      <input type="hidden" name="_csrf" value="{{ csrf_token() }}">
+                      <button class="btn btn-outline-danger btn-sm" type="submit" title="Supprimer">
+                        <i class="bi bi-trash"></i>
+                      </button>
+                    </form>
+                  </div>
+                </div>
+              {% endfor %}
+            </div>
+          {% else %}
+            <div class="text-secondary small">Aucune gestion pour le moment.</div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+    <div class="col-12 col-xl-8">
+      {% if active_module %}
+        <div class="card mb-3">
+          <div class="card-body">
+            <div class="d-flex justify-content-between align-items-start gap-2 flex-wrap mb-2">
+              <div>
+                <h5 class="card-title mb-1">
+                  {% if active_module.icon %}<i class="bi {{ active_module.icon }} me-2"></i>{% endif %}
+                  {{ active_module.name }}
+                </h5>
+                <div class="small text-secondary">{{ active_module.description or "Gestion personnalisee." }}</div>
+              </div>
+              <div class="d-flex gap-2 flex-wrap">
+                <span class="badge text-bg-secondary">Refs {{ active_module.items_count or 0 }}</span>
+                <span class="badge text-bg-info">Champs {{ fields|length }}</span>
+                <span class="badge text-bg-primary">Unites {{ '%.2f'|format(active_module.units_total or 0) }}</span>
+                <span class="badge {{ 'text-bg-warning' if low_count > 0 else 'text-bg-success' }}">Alertes {{ low_count }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card mb-3">
+          <div class="card-body">
+            <h5 class="card-title mb-3">Champs personnalises</h5>
+            <form method="post" action="{{ url_for('tools_custom_field_add', module_id=active_module.id) }}" class="row g-2 align-items-end mb-3">
+              <input type="hidden" name="_csrf" value="{{ csrf_token() }}">
+              <div class="col-12 col-md-4">
+                <label class="form-label">Libelle</label>
+                <input name="label" class="form-control" placeholder="Ex: Taille, Collection, Fournisseur" required>
+              </div>
+              <div class="col-12 col-md-3">
+                <label class="form-label">Code champ (option)</label>
+                <input name="field_key" class="form-control" placeholder="ex_taille">
+              </div>
+              <div class="col-6 col-md-2">
+                <label class="form-label">Type</label>
+                <select name="field_type" id="field-type" class="form-select">
+                  <option value="text">Texte</option>
+                  <option value="number">Nombre</option>
+                  <option value="select">Select</option>
+                  <option value="date">Date</option>
+                  <option value="boolean">Oui/Non</option>
+                </select>
+              </div>
+              <div class="col-6 col-md-1">
+                <label class="form-label">Ordre</label>
+                <input name="sort_order" type="number" class="form-control" value="0">
+              </div>
+              <div class="col-12 col-md-2">
+                <label class="form-label">Options</label>
+                <input name="field_options" id="field-options" class="form-control" placeholder="S,M,L">
+              </div>
+              <div class="col-6 col-md-2">
+                <div class="form-check mt-2">
+                  <input class="form-check-input" type="checkbox" id="is_required" name="is_required" value="1">
+                  <label class="form-check-label" for="is_required">Obligatoire</label>
+                </div>
+              </div>
+              <div class="col-6 col-md-2">
+                <div class="form-check mt-2">
+                  <input class="form-check-input" type="checkbox" id="show_in_table" name="show_in_table" value="1" checked>
+                  <label class="form-check-label" for="show_in_table">Afficher tableau</label>
+                </div>
+              </div>
+              <div class="col-12 col-md-3">
+                <button class="btn btn-outline-primary btn-sm" type="submit">
+                  <i class="bi bi-plus-lg me-1"></i>Ajouter champ
+                </button>
+              </div>
+            </form>
+
+            {% if fields %}
+              <div class="table-responsive">
+                <table class="table table-sm align-middle mb-0">
+                  <thead>
+                    <tr>
+                      <th>Libelle</th><th>Code</th><th>Type</th><th>Options</th><th>Req.</th><th>Table</th><th class="text-end">Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for f in fields %}
+                      <tr>
+                        <td>{{ f.label }}</td>
+                        <td><code>{{ f.field_key }}</code></td>
+                        <td>{{ f.field_type }}</td>
+                        <td class="small text-secondary">{{ (f.options|join(', ')) if f.options else '-' }}</td>
+                        <td>{{ 'Oui' if f.is_required else 'Non' }}</td>
+                        <td>{{ 'Oui' if f.show_in_table else 'Non' }}</td>
+                        <td class="text-end">
+                          <form method="post" action="{{ url_for('tools_custom_field_delete', module_id=active_module.id, field_id=f.id) }}" onsubmit="return confirm('Supprimer ce champ ?');">
+                            <input type="hidden" name="_csrf" value="{{ csrf_token() }}">
+                            <button class="btn btn-outline-danger btn-sm" type="submit"><i class="bi bi-trash"></i></button>
+                          </form>
+                        </td>
+                      </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+            {% else %}
+              <div class="text-secondary small">Ajoute des champs pour personnaliser cette gestion.</div>
+            {% endif %}
+          </div>
+        </div>
+
+        <div class="card mb-3">
+          <div class="card-body">
+            <h5 class="card-title mb-3">Ajouter un article</h5>
+            <form method="post" action="{{ url_for('tools_custom_item_add', module_id=active_module.id) }}" class="row g-2">
+              <input type="hidden" name="_csrf" value="{{ csrf_token() }}">
+              <div class="col-12 col-md-4">
+                <label class="form-label">Nom</label>
+                <input name="name" class="form-control" placeholder="Nom article" required>
+              </div>
+              <div class="col-12 col-md-3">
+                <label class="form-label">Ref / SKU</label>
+                <input name="ref" class="form-control" placeholder="Reference">
+              </div>
+              <div class="col-6 col-md-2">
+                <label class="form-label">Qte</label>
+                <input name="qty" type="number" step="0.001" class="form-control" value="1">
+              </div>
+              <div class="col-6 col-md-1">
+                <label class="form-label">Seuil</label>
+                <input name="min_qty" type="number" step="0.001" class="form-control" value="0">
+              </div>
+              <div class="col-6 col-md-2">
+                <label class="form-label">Prix (EUR)</label>
+                <input name="price" type="number" step="0.01" class="form-control" value="0">
+              </div>
+
+              {% for f in fields %}
+                {% set fn = 'field_' ~ f.field_key %}
+                <div class="col-12 col-md-6">
+                  <label class="form-label">
+                    {{ f.label }}{% if f.is_required %} *{% endif %}
+                  </label>
+                  {% if f.field_type == 'select' %}
+                    <select name="{{ fn }}" class="form-select" {% if f.is_required %}required{% endif %}>
+                      <option value="">- choisir -</option>
+                      {% for opt in f.options %}
+                        <option value="{{ opt }}">{{ opt }}</option>
+                      {% endfor %}
+                    </select>
+                  {% elif f.field_type == 'number' %}
+                    <input name="{{ fn }}" type="number" step="0.001" class="form-control" {% if f.is_required %}required{% endif %}>
+                  {% elif f.field_type == 'date' %}
+                    <input name="{{ fn }}" type="date" class="form-control" {% if f.is_required %}required{% endif %}>
+                  {% elif f.field_type == 'boolean' %}
+                    <div class="form-check mt-1">
+                      <input class="form-check-input" type="checkbox" id="{{ fn }}" name="{{ fn }}" value="1">
+                      <label class="form-check-label" for="{{ fn }}">Oui</label>
+                    </div>
+                  {% else %}
+                    <input name="{{ fn }}" class="form-control" {% if f.is_required %}required{% endif %}>
+                  {% endif %}
+                </div>
+              {% endfor %}
+
+              <div class="col-12">
+                <button class="btn btn-primary btn-sm" type="submit">
+                  <i class="bi bi-plus-circle me-1"></i>Ajouter article
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-body">
+            <div class="d-flex justify-content-between align-items-center gap-2 mb-3 flex-wrap">
+              <h5 class="card-title mb-0">Articles</h5>
+              <form method="get" action="{{ url_for('tools_custom_stock_page') }}" class="d-flex gap-2">
+                <input type="hidden" name="m" value="{{ active_module.id }}">
+                <input name="q" class="form-control form-control-sm" style="min-width:220px" placeholder="Rechercher..." value="{{ search_q }}">
+                <button class="btn btn-outline-secondary btn-sm" type="submit">Filtrer</button>
+                {% if search_q %}
+                  <a class="btn btn-outline-light btn-sm" href="{{ url_for('tools_custom_stock_page', m=active_module.id) }}">Reset</a>
+                {% endif %}
+              </form>
+            </div>
+
+            {% if items %}
+              <div class="table-responsive">
+                <table class="table table-sm align-middle mb-0">
+                  <thead>
+                    <tr>
+                      <th>Nom</th>
+                      <th>Ref</th>
+                      {% for f in table_fields %}
+                        <th>{{ f.label }}</th>
+                      {% endfor %}
+                      <th>Prix</th>
+                      <th>Qte</th>
+                      <th>Seuil</th>
+                      <th class="text-end">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for it in items %}
+                      <tr class="{{ 'table-warning' if it.is_low else '' }}">
+                        <td class="fw-semibold">{{ it.name }}</td>
+                        <td>{{ it.ref or '-' }}</td>
+                        {% for f in table_fields %}
+                          <td>{{ it.custom_values[f.field_key] or '-' }}</td>
+                        {% endfor %}
+                        <td>{{ '%.2f'|format(it.price or 0) }} EUR</td>
+                        <td>
+                          <div class="d-inline-flex align-items-center gap-1">
+                            <form method="post" action="{{ url_for('tools_custom_item_bump', module_id=active_module.id, item_id=it.id) }}">
+                              <input type="hidden" name="_csrf" value="{{ csrf_token() }}">
+                              <input type="hidden" name="delta" value="-1">
+                              <button class="btn btn-outline-secondary btn-sm px-2" type="submit">-</button>
+                            </form>
+                            <span class="badge text-bg-secondary">{{ it.qty_display }}</span>
+                            <form method="post" action="{{ url_for('tools_custom_item_bump', module_id=active_module.id, item_id=it.id) }}">
+                              <input type="hidden" name="_csrf" value="{{ csrf_token() }}">
+                              <input type="hidden" name="delta" value="1">
+                              <button class="btn btn-outline-secondary btn-sm px-2" type="submit">+</button>
+                            </form>
+                          </div>
+                        </td>
+                        <td>{{ it.min_qty_display }}</td>
+                        <td class="text-end">
+                          <form method="post" action="{{ url_for('tools_custom_item_delete', module_id=active_module.id, item_id=it.id) }}" onsubmit="return confirm('Supprimer cet article ?');">
+                            <input type="hidden" name="_csrf" value="{{ csrf_token() }}">
+                            <button class="btn btn-outline-danger btn-sm" type="submit"><i class="bi bi-trash"></i></button>
+                          </form>
+                        </td>
+                      </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+            {% else %}
+              <div class="text-secondary small">Aucun article dans cette gestion.</div>
+            {% endif %}
+          </div>
+        </div>
+      {% else %}
+        <div class="card">
+          <div class="card-body">
+            <div class="text-secondary">Cree une gestion sur mesure pour demarrer.</div>
+          </div>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+<style>
+.module-pill{ border:1px solid rgba(var(--theme-primary-rgb), .16); background:rgba(9, 16, 31, .5); }
+.module-pill-active{ border-color:rgba(var(--theme-primary-rgb), .52); background:rgba(var(--theme-primary-rgb), .12); }
+</style>
+
+<script>
+(function(){
+  const typeEl = document.getElementById("field-type");
+  const optionsEl = document.getElementById("field-options");
+  if (!typeEl || !optionsEl) return;
+  function sync(){
+    const isSelect = typeEl.value === "select";
+    optionsEl.disabled = !isSelect;
+    if (!isSelect) optionsEl.value = "";
+    optionsEl.placeholder = isSelect ? "S,M,L" : "Reserve au type select";
+  }
+  typeEl.addEventListener("change", sync);
+  sync();
+})();
+</script>
+{% endblock %}
+

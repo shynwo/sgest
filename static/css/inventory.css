@@ -1,0 +1,137 @@
+/* Inventory UI — dark friendly */
+:root{
+  --inv-card-bg: #0f1620;
+  --inv-soft: rgba(255,255,255,.06);
+  --inv-soft-2: rgba(255,255,255,.08);
+  --inv-border: rgba(255,255,255,.12);
+  --inv-chip: rgba(255,255,255,.10);
+  --inv-text-dim: rgba(255,255,255,.75);
+  --inv-green: #22c55e;
+  --inv-red: #ef4444;
+  --inv-amber: #f59e0b;
+}
+
+.inv-wrap{display:grid;gap:1rem}
+.inv-toolbar{
+  display:flex;gap:.75rem;align-items:center;flex-wrap:wrap;
+}
+.inv-toolbar .pill{
+  background:var(--inv-chip); border:1px solid var(--inv-border);
+  padding:.35rem .6rem; border-radius:999px; font-weight:600
+}
+.inv-toolbar .muted{color:var(--inv-text-dim)}
+.inv-toolbar .spacer{flex:1 1 auto}
+
+.inv-card{
+  background:var(--inv-card-bg);
+  border:1px solid var(--inv-border);
+  border-radius:14px;
+  box-shadow: 0 6px 24px rgba(0,0,0,.28), inset 0 1px 0 rgba(255,255,255,.03);
+}
+
+.inv-card .inv-card-header{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:.9rem 1rem;border-bottom:1px solid var(--inv-border);
+  background:linear-gradient(0deg, transparent, rgba(255,255,255,.02));
+  border-top-left-radius:14px;border-top-right-radius:14px;
+}
+.inv-card .inv-card-body{padding:1rem}
+
+/* 2 colonnes sur desktop */
+@media (min-width: 992px){
+  .inv-grid{display:grid;grid-template-columns: 1fr 1.4fr; gap:1rem}
+}
+
+/* Form */
+.inv-form .form-label{font-weight:600;color:var(--inv-text-dim)}
+.inv-form .btn-outline-secondary{border-color:var(--inv-border)}
+
+/* Table */
+.table-inv{
+  width:100%;border-collapse:separate;border-spacing:0;
+  overflow:hidden;border-radius:12px;border:1px solid var(--inv-border)
+}
+.table-inv thead th{
+  background:rgba(255,255,255,.05);
+  position:sticky; top:0; z-index:2;
+  font-weight:700;
+}
+.table-inv th, .table-inv td{padding:.8rem 1rem}
+.table-inv tbody tr:nth-child(odd){background:var(--inv-soft)}
+.table-inv tbody tr:nth-child(even){background:var(--inv-soft-2)}
+.table-inv tbody tr:hover{outline:2px solid rgba(255,255,255,.12)}
+.table-inv .chip{
+  display:inline-flex;align-items:center;gap:.4rem;
+  padding:.18rem .5rem;border-radius:999px;
+  background:var(--inv-chip); border:1px solid var(--inv-border); font-weight:600
+}
+.table-inv .cell-actions{position:sticky; right:0; background:inherit}
+.table-inv .price{font-variant-numeric: tabular-nums}
+
+/* Buttons */
+.btn-add{
+  background:var(--inv-green)!important;border:none!important;color:#00150a!important;
+  font-weight:700;box-shadow:0 6px 20px rgba(34,197,94,.25);transition:.15s transform ease
+}
+.btn-add:hover{transform:translateY(-1px)}
+.btn-del{
+  --bs-btn-color: var(--inv-red); --bs-btn-border-color: var(--inv-red);
+  --bs-btn-hover-bg: var(--inv-red); --bs-btn-hover-border-color: var(--inv-red);
+}
+
+/* Toolbar inputs */
+.inv-search{
+  background:#0b1119;border:1px solid var(--inv-border);color:#fff;border-radius:10px;
+  padding:.55rem .75rem; min-width:260px
+}
+.inv-select{
+  background:#0b1119;border:1px solid var(--inv-border);color:#fff;border-radius:10px;
+  padding:.48rem .6rem;
+}
+
+/* Empty state */
+.inv-empty{
+  padding:2rem;text-align:center;border:1px dashed var(--inv-border);
+  border-radius:12px;color:var(--inv-text-dim)
+}
+
+/* Tiny helper badges */
+.badge-note{
+  background:rgba(34,197,94,.15); border:1px solid rgba(34,197,94,.3);
+  color:#a7f3d0; padding:.2rem .5rem; border-radius:999px; font-weight:700
+}
+
+
+/* --- kill native search icon (all browsers) --- */
+.inv-search-input::-webkit-search-decoration,
+.inv-search-input::-webkit-search-cancel-button,
+.inv-search-input::-webkit-search-results-button,
+.inv-search-input::-webkit-search-results-decoration { -webkit-appearance:none !important; appearance:none !important; }
+
+.inv-search-input {
+  -webkit-appearance:none !important;
+  appearance:none !important;
+  background:none !important;
+  background-image:none !important;
+}
+
+input[type="search"]::-webkit-search-decoration,
+input[type="search"]::-webkit-search-cancel-button,
+input[type="search"]::-webkit-search-results-button,
+input[type="search"]::-webkit-search-results-decoration { -webkit-appearance:none !important; appearance:none !important; }
+
+input[type="search"]{
+  -webkit-appearance:none !important;
+  appearance:none !important;
+  background:none !important;
+  background-image:none !important;
+}
+
+
+/* --- hide the left search addon (magnifier) and fix input rounding --- */
+.inv-search .inv-search-addon{ display:none !important; }
+.inv-search .form-control.inv-search-input{
+  border-top-left-radius: .375rem !important;
+  border-bottom-left-radius: .375rem !important;
+  padding-left: .75rem !important; /* remove extra gap left by the addon */
+}

@@ -1,0 +1,241 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container py-3">
+  {% with messages = get_flashed_messages(with_categories=True) %}
+    {% if messages %}
+      {% for cat, msg in messages %}
+        <div class="alert alert-{{ 'warning' if cat=='warning' else 'success' }} border-0" role="alert">{{ msg }}</div>
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
+
+  <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+    <div>
+      <div class="small text-secondary">{{ catalog.business_type }}</div>
+      <h2 class="h4 mb-1">{{ catalog.name }}</h2>
+      <p class="text-secondary mb-0">{{ catalog.description or 'Aucune description.' }}</p>
+    </div>
+    <div class="d-flex flex-wrap gap-2">
+      <a href="{{ url_for('tools_catalogs_page') }}" class="btn btn-outline-secondary btn-sm">Tous les catalogues</a>
+      <form method="post" action="{{ url_for('tools_catalog_toggle_public', catalog_id=catalog.id) }}" class="d-inline">
+        <input type="hidden" name="_csrf" value="{{ csrf_token() }}">
+        <input type="hidden" name="is_public" value="{{ 0 if catalog.is_public else 1 }}">
+        <button class="btn btn-sm {{ 'btn-outline-danger' if catalog.is_public else 'btn-outline-primary' }}" type="submit">
+          {{ 'Desactiver le partage public' if catalog.is_public else 'Activer le partage public' }}
+        </button>
+      </form>
+      <form method="post" action="{{ url_for('tools_catalog_delete', catalog_id=catalog.id) }}" class="d-inline" onsubmit="return confirm('Supprimer ce catalogue et toutes ses fiches ?');">
+        <input type="hidden" name="_csrf" value="{{ csrf_token() }}">
+        <button class="btn btn-outline-danger btn-sm" type="submit">Supprimer le catalogue</button>
+      </form>
+    </div>
+  </div>
+
+  {% if catalog.is_public %}
+  <div class="alert alert-info d-flex justify-content-between align-items-center gap-2">
+    <div>URL publique client:</div>
+    <div class="d-flex align-items-center gap-2 flex-wrap">
+      <code>{{ public_url }}</code>
+      <button type="button" class="btn btn-sm btn-outline-primary" data-copy="{{ public_url }}">Copier</button>
+      <a class="btn btn-sm btn-outline-light" href="{{ public_url }}" target="_blank" rel="noopener">Ouvrir</a>
+    </div>
+  </div>
+  {% endif %}
+
+  <div class="row g-3">
+    <div class="col-12 col-xl-4">
+      <div class="card h-100">
+        <div class="card-body">
+          <h5 class="card-title mb-3">Nouvelle fiche produit</h5>
+          <form method="post" action="{{ url_for('tools_catalog_item_add', catalog_id=catalog.id) }}" enctype="multipart/form-data" class="row g-3">
+            <input type="hidden" name="_csrf" value="{{ csrf_token() }}">
+            <div class="col-12">
+              <label class="form-label">Titre produit</label>
+              <input name="title" class="form-control" required>
+            </div>
+            <div class="col-6">
+              <label class="form-label">SKU / Ref</label>
+              <input name="sku" class="form-control">
+            </div>
+            <div class="col-6">
+              <label class="form-label">Prix de vente (EUR)</label>
+              <input name="price" type="number" min="0" step="0.01" class="form-control" value="0">
+            </div>
+            <div class="col-12">
+              <label class="form-label">Fiche de vente</label>
+              <input name="sale_sheet" class="form-control" placeholder="Angle marketing / points forts / SEO">
+            </div>
+            <div class="col-12">
+              <label class="form-label">Description</label>
+              <textarea name="description" rows="4" class="form-control"></textarea>
+            </div>
+            <div class="col-12">
+              <label class="form-label">Tags</label>
+              <input name="tags" class="form-control" placeholder="tshirt, broderie, cadeau, ...">
+            </div>
+            <div class="col-12">
+              <label class="form-label">Statut</label>
+              <select name="status" class="form-select">
+                <option value="draft">Brouillon</option>
+                <option value="ready">Pret a publier</option>
+                <option value="published">Publie</option>
+              </select>
+            </div>
+            <div class="col-12">
+              <label class="form-label">Fichiers (photos + docs)</label>
+              <input type="file" name="files" class="form-control" accept=".jpg,.jpeg,.png,.webp,.gif,.pdf,.txt,.csv,.stl,.obj,.3mf,.zip" multiple>
+              <div class="small text-secondary mt-1">Formats: images, PDF, CSV, STL/OBJ/3MF, ZIP.</div>
+            </div>
+            <div class="col-12 d-grid">
+              <button class="btn btn-primary" type="submit"><i class="bi bi-plus-circle me-2"></i>Ajouter la fiche</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-12 col-xl-8">
+      <div class="card h-100">
+        <div class="card-body">
+          <h5 class="card-title mb-3">Fiches catalogue</h5>
+          <div class="small text-secondary mb-3">{{ items|length }} fiche(s) en base.</div>
+          {% if items %}
+            <div class="d-grid gap-3">
+              {% for it in items %}
+              <div class="item-card">
+                <div class="d-flex justify-content-between align-items-start gap-2">
+                  <div>
+                    <div class="d-flex align-items-center gap-2 flex-wrap">
+                      <div class="fw-semibold">{{ it.title }}</div>
+                      <span class="badge text-bg-secondary">{{ it.status }}</span>
+                    </div>
+                    <div class="small text-secondary">SKU: {{ it.sku or '-' }} | Prix: {{ '%.2f'|format(it.price or 0) }} EUR</div>
+                  </div>
+                  <form method="post" action="{{ url_for('tools_catalog_item_delete', catalog_id=catalog.id, item_id=it.id) }}" onsubmit="return confirm('Supprimer cette fiche ?');">
+                    <input type="hidden" name="_csrf" value="{{ csrf_token() }}">
+                    <button type="submit" class="btn btn-sm btn-outline-danger">Supprimer</button>
+                  </form>
+                </div>
+                {% if it.cover %}
+                <div class="mt-2">
+                  <a href="{{ url_for('tools_catalog_file', file_id=it.cover.id) }}" target="_blank" rel="noopener">
+                    <img src="{{ url_for('tools_catalog_file', file_id=it.cover.id) }}" alt="Apercu {{ it.title }}" class="item-cover">
+                  </a>
+                </div>
+                {% endif %}
+
+                <div class="small mt-2">{{ it.description or '' }}</div>
+                {% if it.sale_sheet %}
+                <div class="small mt-2"><span class="text-secondary">Fiche vente:</span> {{ it.sale_sheet }}</div>
+                {% endif %}
+                {% if it.tags %}
+                <div class="small mt-2"><span class="text-secondary">Tags:</span> {{ it.tags }}</div>
+                {% endif %}
+
+                {% if it.files %}
+                <div class="row g-2 mt-2">
+                  {% for f in it.files %}
+                  <div class="col-12 col-md-6">
+                    <div class="file-chip d-flex justify-content-between align-items-center gap-2">
+                      <div class="text-truncate d-flex align-items-center gap-2">
+                        {% if f.is_image %}
+                        <img class="mini-thumb" src="{{ url_for('tools_catalog_file', file_id=f.id) }}" alt="Apercu {{ f.original_name }}">
+                        {% endif %}
+                        <div class="text-truncate">
+                          <a href="{{ url_for('tools_catalog_file', file_id=f.id) }}" target="_blank" rel="noopener">{{ f.original_name }}</a>
+                        </div>
+                      </div>
+                      <div class="small text-secondary ms-auto me-2">{{ f.file_kind }} | {{ f.size_bytes }} bytes</div>
+                      <form method="post" action="{{ url_for('tools_catalog_file_delete', catalog_id=catalog.id, file_id=f.id) }}" onsubmit="return confirm('Supprimer ce fichier ?');">
+                        <input type="hidden" name="_csrf" value="{{ csrf_token() }}">
+                        <button class="btn btn-sm btn-outline-danger" type="submit"><i class="bi bi-trash"></i></button>
+                      </form>
+                    </div>
+                  </div>
+                  {% endfor %}
+                </div>
+                {% endif %}
+              </div>
+              {% endfor %}
+            </div>
+          {% else %}
+            <div class="text-secondary">Aucune fiche pour ce catalogue.</div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+.item-card{
+  border:1px solid rgba(148,163,184,.25);
+  border-radius:12px;
+  background:rgba(255,255,255,.03);
+  padding:.8rem;
+}
+.file-chip{
+  border:1px solid rgba(148,163,184,.2);
+  border-radius:10px;
+  padding:.45rem .55rem;
+  background:rgba(255,255,255,.02);
+}
+.item-cover{
+  width:100%;
+  max-height:220px;
+  object-fit:cover;
+  border-radius:10px;
+  border:1px solid rgba(148,163,184,.22);
+}
+.mini-thumb{
+  width:34px;
+  height:34px;
+  object-fit:cover;
+  border-radius:6px;
+  border:1px solid rgba(148,163,184,.26);
+}
+</style>
+
+<script>
+function fallbackCopyText(text){
+  const ta = document.createElement("textarea");
+  ta.value = text;
+  ta.setAttribute("readonly", "");
+  ta.style.position = "fixed";
+  ta.style.top = "-9999px";
+  ta.style.left = "-9999px";
+  document.body.appendChild(ta);
+  ta.focus();
+  ta.select();
+  let ok = false;
+  try {
+    ok = document.execCommand("copy");
+  } catch(_e) {
+    ok = false;
+  }
+  document.body.removeChild(ta);
+  return ok;
+}
+
+async function copyTextSmart(text){
+  if (!text) return false;
+  if (navigator.clipboard && window.isSecureContext) {
+    try {
+      await navigator.clipboard.writeText(text);
+      return true;
+    } catch(_e) {}
+  }
+  return fallbackCopyText(text);
+}
+
+document.addEventListener("click", async function(e){
+  const btn = e.target.closest("[data-copy]");
+  if(!btn) return;
+  const txt = btn.getAttribute("data-copy") || "";
+  const original = btn.textContent;
+  const ok = await copyTextSmart(txt);
+  btn.textContent = ok ? "Copie" : "Copie impossible";
+  setTimeout(() => { btn.textContent = original || "Copier"; }, 1500);
+});
+</script>
+{% endblock %}

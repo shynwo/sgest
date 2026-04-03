@@ -1,0 +1,121 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container py-3">
+  {% with messages = get_flashed_messages(with_categories=True) %}
+    {% if messages %}
+      {% for cat, msg in messages %}
+        <div class="alert alert-{{ 'warning' if cat == 'warning' else 'success' }} border-0" role="alert">{{ msg }}</div>
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
+
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <div>
+      <h2 class="h4 mb-1">Integrations</h2>
+      <div class="small text-secondary">SMTP, webhooks et API externes du dashboard.</div>
+    </div>
+    <a href="/system" class="btn btn-outline-secondary btn-sm">Retour Systeme</a>
+  </div>
+
+  <div class="row g-3">
+    <div class="col-12 col-xl-6">
+      <div class="card h-100">
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <h5 class="card-title mb-0"><i class="bi bi-envelope-at me-2"></i>SMTP</h5>
+            <span class="badge {{ 'text-bg-success' if smtp_ready else 'text-bg-secondary' }}">
+              {{ 'Actif' if smtp_ready else 'A configurer' }}
+            </span>
+          </div>
+          <form method="post" action="{{ url_for('system_integrations_smtp_update') }}" class="row g-2">
+            <input type="hidden" name="_csrf" value="{{ csrf_token() }}">
+            <div class="col-12 col-md-8">
+              <label class="form-label">Host</label>
+              <input name="smtp_host" class="form-control" value="{{ smtp_host }}">
+            </div>
+            <div class="col-12 col-md-4">
+              <label class="form-label">Port</label>
+              <input name="smtp_port" class="form-control" value="{{ smtp_port }}">
+            </div>
+            <div class="col-12">
+              <label class="form-label">Utilisateur SMTP</label>
+              <input name="smtp_user" class="form-control" value="{{ smtp_user }}">
+            </div>
+            <div class="col-12">
+              <label class="form-label">Email expediteur</label>
+              <input name="smtp_from" class="form-control" value="{{ smtp_from }}">
+            </div>
+            <div class="col-12">
+              <label class="form-label">Mot de passe SMTP</label>
+              <input name="smtp_password" type="password" class="form-control" placeholder="{{ 'deja enregistre (laisser vide pour conserver)' if smtp_password_set else 'saisir un mot de passe SMTP' }}">
+            </div>
+            <div class="col-12">
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" value="1" id="smtp_tls" name="smtp_tls" {% if smtp_tls %}checked{% endif %}>
+                <label class="form-check-label" for="smtp_tls">Activer TLS</label>
+              </div>
+            </div>
+            <div class="col-12">
+              <button type="submit" class="btn btn-primary btn-sm">Enregistrer SMTP</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-12 col-xl-6">
+      <div class="card h-100">
+        <div class="card-body">
+          <h5 class="card-title mb-3"><i class="bi bi-plug me-2"></i>API externes & webhooks</h5>
+          <form method="post" action="{{ url_for('system_integrations_apis_update') }}" class="row g-2">
+            <input type="hidden" name="_csrf" value="{{ csrf_token() }}">
+            <div class="col-12">
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" value="1" id="require_webhook_token" name="require_webhook_token" {% if require_webhook_token %}checked{% endif %}>
+                <label class="form-check-label" for="require_webhook_token">Exiger un token webhook</label>
+              </div>
+            </div>
+            <div class="col-12">
+              <label class="form-label">Token webhook global</label>
+              <input name="webhook_token" type="password" class="form-control" placeholder="{{ 'deja configure (laisser vide pour conserver)' if webhook_token_set else 'token global' }}">
+            </div>
+            <div class="col-12 col-md-6">
+              <label class="form-label">Token webhook Etsy</label>
+              <input name="etsy_webhook_token" type="password" class="form-control" placeholder="{{ 'deja configure' if etsy_webhook_token_set else 'token etsy' }}">
+            </div>
+            <div class="col-12 col-md-6">
+              <label class="form-label">Token webhook Vinted</label>
+              <input name="vinted_webhook_token" type="password" class="form-control" placeholder="{{ 'deja configure' if vinted_webhook_token_set else 'token vinted' }}">
+            </div>
+            <div class="col-12 col-md-6">
+              <label class="form-label">Etsy API key</label>
+              <input name="etsy_api_key" type="password" class="form-control" placeholder="{{ 'deja configuree' if etsy_api_key_set else 'api key etsy' }}">
+            </div>
+            <div class="col-12 col-md-6">
+              <label class="form-label">Etsy API secret</label>
+              <input name="etsy_api_secret" type="password" class="form-control" placeholder="{{ 'deja configure' if etsy_api_secret_set else 'api secret etsy' }}">
+            </div>
+            <div class="col-12 col-md-6">
+              <label class="form-label">Vinted API key</label>
+              <input name="vinted_api_key" type="password" class="form-control" placeholder="{{ 'deja configuree' if vinted_api_key_set else 'api key vinted' }}">
+            </div>
+            <div class="col-12 col-md-6">
+              <label class="form-label">Vinted API secret</label>
+              <input name="vinted_api_secret" type="password" class="form-control" placeholder="{{ 'deja configure' if vinted_api_secret_set else 'api secret vinted' }}">
+            </div>
+            <div class="col-12">
+              <div class="small text-secondary">
+                Webhooks: <code>{{ request.host_url.rstrip('/') }}/webhooks/orders/etsy</code> et
+                <code>{{ request.host_url.rstrip('/') }}/webhooks/orders/vinted</code>
+              </div>
+            </div>
+            <div class="col-12">
+              <button type="submit" class="btn btn-primary btn-sm">Enregistrer les integrations</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

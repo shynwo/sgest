@@ -1,0 +1,11 @@
+{# Mini toolbar: cloche (alertes), enveloppe (commandes) #}
+<div id="mini-toolbar" class="container-fluid px-3 py-2 border-bottom d-flex justify-content-end align-items-center gap-2">
+  <a id="btn-alerts" href="/stock/impression3d" class="btn btn-sm btn-outline-light position-relative" title="Alertes stock">
+    <i class="bi bi-bell"></i>
+    <span id="badge-alerts" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger d-none">0</span>
+  </a>
+  <a id="btn-orders" href="#" class="btn btn-sm btn-outline-light position-relative" title="Commandes">
+    <i class="bi bi-envelope"></i>
+    <span id="badge-orders" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-primary d-none">0</span>
+  </a>
+</div>

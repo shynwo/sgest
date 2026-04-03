@@ -1,0 +1,263 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container py-3">
+  {% with messages = get_flashed_messages(with_categories=True) %}
+    {% if messages %}
+      {% for cat, msg in messages %}
+        <div class="alert alert-{{ 'warning' if cat=='warning' else 'success' }} border-0" role="alert">{{ msg }}</div>
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
+
+  <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+    <div>
+      <h2 class="h4 mb-1">Gain Boutique</h2>
+      <p class="text-secondary mb-0">Pilotage ventes/pertes avec impact stock en temps reel.</p>
+    </div>
+    <div class="d-flex flex-wrap gap-2">
+      <a class="btn btn-sm {{ 'btn-primary' if period=='day' else 'btn-outline-secondary' }}" href="{{ url_for('tools_gain_page', period='day') }}">Jour</a>
+      <a class="btn btn-sm {{ 'btn-primary' if period=='week' else 'btn-outline-secondary' }}" href="{{ url_for('tools_gain_page', period='week') }}">Semaine</a>
+      <a class="btn btn-sm {{ 'btn-primary' if period=='month' else 'btn-outline-secondary' }}" href="{{ url_for('tools_gain_page', period='month') }}">Mois</a>
+      <a class="btn btn-sm btn-outline-light" href="{{ url_for('tools_gain_export_csv', period=period) }}">
+        <i class="bi bi-download me-1"></i>Export CSV
+      </a>
+    </div>
+  </div>
+
+  <div class="row g-2 mb-3">
+    <div class="col-6 col-md-3"><div class="gain-kpi"><div class="kpi-label">CA</div><div class="kpi-value">{{ '%.2f'|format(biz.revenue or 0) }} EUR</div></div></div>
+    <div class="col-6 col-md-3"><div class="gain-kpi"><div class="kpi-label">Couts</div><div class="kpi-value">{{ '%.2f'|format(biz.cost or 0) }} EUR</div></div></div>
+    <div class="col-6 col-md-3"><div class="gain-kpi"><div class="kpi-label">URSSAF</div><div class="kpi-value">{{ '%.2f'|format(biz.urssaf or 0) }} EUR</div></div></div>
+    <div class="col-6 col-md-3"><div class="gain-kpi"><div class="kpi-label">Gain Net</div><div class="kpi-value {{ 'text-success' if (biz.profit or 0) >= 0 else 'text-danger' }}">{{ '%.2f'|format(biz.profit or 0) }} EUR</div></div></div>
+  </div>
+
+  <div class="row g-3">
+    <div class="col-12 col-xl-5">
+      <div class="card h-100">
+        <div class="card-body">
+          <h5 class="card-title mb-3">Nouveau mouvement</h5>
+          <form method="post" action="{{ url_for('tools_gain_record') }}" class="row g-3" id="gain-form">
+            <input type="hidden" name="period" value="{{ period }}">
+
+            <div class="col-6">
+              <label class="form-label">Type</label>
+              <select name="tx_type" id="tx-type" class="form-select">
+                <option value="sale">Vente</option>
+                <option value="loss">Perte</option>
+              </select>
+            </div>
+            <div class="col-6">
+              <label class="form-label">Categorie</label>
+              <select name="category" id="category" class="form-select">
+                <option value="broderie">Broderie</option>
+                <option value="impression3d">Impression 3D</option>
+              </select>
+            </div>
+
+            <div class="col-12" id="bro-field">
+              <label class="form-label">Article Broderie</label>
+              <select id="bro-item-select" class="form-select">
+                {% for it in bro_products %}
+                <option value="{{ it.id }}" data-price="{{ '%.6f'|format(it.price or 0) }}" data-qty="{{ it.qty or 0 }}">
+                  {{ (it.name or 'Article') }} | {{ it.material or '-' }} | {{ it.color or '-' }} | stock {{ it.qty or 0 }} | {{ '%.2f'|format(it.price or 0) }} EUR
+                </option>
+                {% endfor %}
+              </select>
+            </div>
+
+            <div class="col-12 d-none" id="spool-field">
+              <label class="form-label">Bobine 3D</label>
+              <select id="spool-item-select" class="form-select">
+                {% for it in spools %}
+                <option value="{{ it.id }}" data-price="{{ '%.6f'|format(it.price or 0) }}" data-qty="{{ it.qty or 0 }}">
+                  {{ (it.name or 'Bobine') }} | {{ it.material or '-' }} | {{ it.color or '-' }} | stock {{ '%.3f'|format(it.qty or 0) }}
+                </option>
+                {% endfor %}
+              </select>
+            </div>
+
+            <input type="hidden" name="item_id" id="item-id-hidden" value="">
+
+            <div class="col-6">
+              <label class="form-label">Quantite pieces</label>
+              <input type="number" name="qty_units" id="qty-units" min="1" step="1" class="form-control" value="1">
+            </div>
+            <div class="col-6 d-none" id="grams-wrap">
+              <label class="form-label">Gramme / piece</label>
+              <input type="number" name="grams_per_unit" id="grams-per-unit" min="0" step="0.1" class="form-control" value="0">
+            </div>
+
+            <div class="col-12" id="sell-price-wrap">
+              <label class="form-label">Prix de vente / piece (EUR)</label>
+              <input type="number" name="sell_unit_price" id="sell-unit-price" min="0" step="0.01" class="form-control" value="20">
+            </div>
+
+            <div class="col-12"><div class="small text-secondary" id="stock-hint">Selectionne un article pour voir le stock disponible.</div></div>
+
+            <div class="col-12 d-flex gap-2">
+              <button class="btn btn-primary flex-grow-1" type="submit">
+                <i class="bi bi-save2 me-2"></i>Enregistrer
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-12 col-xl-7">
+      <div class="card mb-3">
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-center gap-2">
+            <h5 class="card-title mb-0">Article le plus rentable</h5>
+            <form method="post" action="{{ url_for('tools_gain_reset') }}" onsubmit="return confirm('Vider tout l historique des gains ?');">
+              <input type="hidden" name="period" value="{{ period }}">
+              <button class="btn btn-sm btn-outline-danger" type="submit">Vider historique</button>
+            </form>
+          </div>
+          {% if best_product %}
+          <div class="row g-2 mt-2">
+            <div class="col-12 col-md-6">
+              <div class="gain-top-box">
+                <div class="small text-secondary">{{ 'Broderie' if best_product.category == 'broderie' else 'Impression 3D' }}</div>
+                <div class="fw-semibold">{{ best_product.item_name or 'Article' }}</div>
+                <div class="small text-secondary">{{ best_product.material or '-' }} | {{ best_product.color or '-' }}</div>
+              </div>
+            </div>
+            <div class="col-12 col-md-6">
+              <div class="gain-top-box">
+                <div class="small text-secondary">Marge</div>
+                <div class="fw-semibold {{ 'text-success' if (best_product.margin_pct or 0) >= 0 else 'text-danger' }}">{{ '%.1f'|format(best_product.margin_pct or 0) }}%</div>
+                <div class="small text-secondary">Gain net {{ '%.2f'|format(best_product.profit or 0) }} EUR</div>
+              </div>
+            </div>
+          </div>
+          <div class="table-responsive mt-3">
+            <table class="table table-dark table-sm align-middle mb-0">
+              <thead><tr><th>#</th><th>Article</th><th>Marge</th><th>Gain</th></tr></thead>
+              <tbody>
+                {% for p in top_products %}
+                <tr>
+                  <td>{{ loop.index }}</td>
+                  <td>{{ p.item_name or '-' }}<div class="small text-secondary">{{ 'Broderie' if p.category == 'broderie' else '3D' }}</div></td>
+                  <td>{{ '%.1f'|format(p.margin_pct or 0) }}%</td>
+                  <td class="{{ 'text-success' if (p.profit or 0) >= 0 else 'text-danger' }}">{{ '%.2f'|format(p.profit or 0) }} EUR</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+          {% else %}
+          <div class="text-secondary small mt-2">Aucune donnee pour la periode selectionnee.</div>
+          {% endif %}
+        </div>
+      </div>
+
+      <div class="card h-100">
+        <div class="card-body">
+          <h5 class="card-title mb-3">Historique</h5>
+          <div class="table-responsive">
+            <table class="table table-dark table-sm align-middle mb-0">
+              <thead>
+                <tr>
+                  <th>Date</th><th>Type</th><th>Categorie</th><th>Article</th><th>Qte</th><th>Grammes</th><th>CA</th><th>Cout</th><th>URSSAF</th><th>Gain</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% if events %}
+                  {% for e in events %}
+                  <tr>
+                    <td class="small">{{ e.created_at }}</td>
+                    <td><span class="badge rounded-pill {{ 'text-bg-success' if e.tx_type == 'sale' else 'text-bg-danger' }}">{{ 'Vente' if e.tx_type == 'sale' else 'Perte' }}</span></td>
+                    <td>{{ 'Broderie' if e.category == 'broderie' else '3D' }}</td>
+                    <td>{{ e.item_name or '-' }}<div class="small text-secondary">{{ e.material or '-' }} | {{ e.color or '-' }}</div></td>
+                    <td>{{ e.qty }}</td>
+                    <td>{{ ((e.total_grams or 0)|round(1)) if e.category == 'impression3d' else '-' }}</td>
+                    <td>{{ '%.2f'|format(e.revenue or 0) }}</td>
+                    <td>{{ '%.2f'|format(e.cost or 0) }}</td>
+                    <td>{{ '%.2f'|format(e.urssaf or 0) }}</td>
+                    <td class="{{ 'text-success' if (e.profit or 0) >= 0 else 'text-danger' }}">{{ '%.2f'|format(e.profit or 0) }}</td>
+                  </tr>
+                  {% endfor %}
+                {% else %}
+                  <tr><td colspan="10" class="text-center text-secondary py-3">Aucun mouvement pour cette periode.</td></tr>
+                {% endif %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+.gain-kpi{border:1px solid rgba(148,163,184,.25);border-radius:10px;background:rgba(255,255,255,.03);padding:.55rem .65rem}
+.gain-kpi .kpi-label{font-size:.72rem;text-transform:uppercase;letter-spacing:.04em;color:#9fb0c6}
+.gain-kpi .kpi-value{font-weight:700}
+.gain-top-box{border:1px solid rgba(148,163,184,.25);border-radius:10px;background:rgba(255,255,255,.03);padding:.55rem .65rem}
+</style>
+
+<script>
+(function(){
+  const category = document.getElementById("category");
+  const txType = document.getElementById("tx-type");
+  const broField = document.getElementById("bro-field");
+  const spoolField = document.getElementById("spool-field");
+  const broSelect = document.getElementById("bro-item-select");
+  const spoolSelect = document.getElementById("spool-item-select");
+  const gramsWrap = document.getElementById("grams-wrap");
+  const gramsPerUnit = document.getElementById("grams-per-unit");
+  const sellPriceWrap = document.getElementById("sell-price-wrap");
+  const sellPrice = document.getElementById("sell-unit-price");
+  const itemIdHidden = document.getElementById("item-id-hidden");
+  const stockHint = document.getElementById("stock-hint");
+  const qtyUnits = document.getElementById("qty-units");
+  const spoolBase = {{ spool_base_grams|int }};
+
+  function toNum(v){ const n = parseFloat(String(v || "").replace(",", ".")); return Number.isFinite(n) ? n : 0; }
+  function activeSelect(){ return category.value === "broderie" ? broSelect : spoolSelect; }
+
+  function syncCategory(){
+    const is3d = category.value === "impression3d";
+    broField.classList.toggle("d-none", is3d);
+    spoolField.classList.toggle("d-none", !is3d);
+    gramsWrap.classList.toggle("d-none", !is3d);
+    if (!is3d) gramsPerUnit.value = "0";
+    syncSelectedItem();
+  }
+
+  function syncTxType(){
+    const isLoss = txType.value === "loss";
+    sellPriceWrap.classList.toggle("opacity-75", isLoss);
+    sellPrice.readOnly = isLoss;
+    if (isLoss) sellPrice.value = "0";
+  }
+
+  function syncSelectedItem(){
+    const sel = activeSelect();
+    const opt = sel && sel.options[sel.selectedIndex];
+    if (!opt) return;
+    itemIdHidden.value = opt.value || "";
+    const stockQty = toNum(opt.dataset.qty);
+    if (category.value === "impression3d"){
+      const gramsAvailable = stockQty * spoolBase;
+      const gramsNeed = toNum(gramsPerUnit.value) * toNum(qtyUnits.value || 1);
+      stockHint.textContent = `Stock bobine: ${stockQty.toFixed(3)} | ${Math.round(gramsAvailable)} g dispo | ${Math.round(gramsNeed)} g demandes`;
+    } else {
+      const need = toNum(qtyUnits.value || 1);
+      stockHint.textContent = `Stock vetement: ${stockQty} | Pieces demandees: ${need}`;
+    }
+  }
+
+  [category, txType, broSelect, spoolSelect, gramsPerUnit, qtyUnits].forEach((node) => {
+    if (!node) return;
+    node.addEventListener("change", () => { syncCategory(); syncTxType(); syncSelectedItem(); });
+    node.addEventListener("input", syncSelectedItem);
+  });
+
+  syncCategory();
+  syncTxType();
+  syncSelectedItem();
+})();
+</script>
+{% endblock %}

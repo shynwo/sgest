@@ -1,0 +1,225 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container-fluid py-3 dashboard-overview">
+  <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+    <div>
+      <h2 class="h4 mb-1">Vue rapide des stocks</h2>
+      <p class="text-secondary mb-0">Broderie et Impression 3D en un coup d'oeil.</p>
+    </div>
+    <div class="d-flex flex-wrap gap-2">
+      <span class="badge rounded-pill text-bg-secondary px-3 py-2">Refs {{ total_refs }}</span>
+      <span class="badge rounded-pill text-bg-info px-3 py-2">Unites {{ total_units }}</span>
+      <span class="badge rounded-pill {{ 'text-bg-danger' if total_low_alerts > 0 else 'text-bg-success' }} px-3 py-2">
+        Alertes {{ total_low_alerts }}
+      </span>
+    </div>
+  </div>
+
+  <div class="row g-3">
+    {% for stock in stocks %}
+    <div class="col-12 col-xl-6">
+      <div class="card card-deep border-0 h-100 dash-stock-card {{ 'dash-stock-alert' if stock.low_count > 0 else 'dash-stock-ok' }}">
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-start gap-3 mb-3">
+            <div>
+              <div class="d-flex align-items-center gap-2 mb-1">
+                <span class="dash-stock-icon {{ 'dash-stock-icon-alert' if stock.low_count > 0 else 'dash-stock-icon-ok' }}">
+                  <i class="bi {{ stock.icon }}"></i>
+                </span>
+                <h3 class="h5 mb-0">{{ stock.label }}</h3>
+              </div>
+              <div class="small text-secondary">
+                {{ stock.refs }} refs | {{ stock.materials }} {{ stock.dimension_label }} | {{ stock.colors }} couleurs
+              </div>
+            </div>
+            <a href="{{ stock.url }}" class="btn btn-sm btn-outline-light">Ouvrir</a>
+          </div>
+
+          <div class="dash-spotlight mb-3">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <h4 class="h6 mb-0">{{ stock.spotlight_title }}</h4>
+              <span class="badge rounded-pill dash-yellow-pill">{{ stock.spotlight_total }} {{ stock.spotlight_unit_label }}</span>
+            </div>
+            {% if stock.spotlight %}
+              <div class="dash-spot-chart-wrap">
+                <div class="dash-spot-chart">
+                {% for sp in stock.spotlight %}
+                  <div class="dash-spot-col">
+                    <div class="dash-spot-value">{{ sp.units }}</div>
+                    <div class="dash-spot-bar-zone">
+                      <div class="dash-spot-bar"
+                           style="--h: {{ sp.pct }}%; --bar-start: {{ sp.bar_start }}%; --bar-end: {{ sp.bar_end }}%;"
+                           title="{{ sp.label }}: {{ sp.units }}"></div>
+                    </div>
+                    <div class="dash-spot-label" title="{{ sp.label }}">{{ sp.label }}</div>
+                  </div>
+                {% endfor %}
+                </div>
+              </div>
+            {% else %}
+              <div class="small text-secondary py-2">Aucune unite pour le moment.</div>
+            {% endif %}
+          </div>
+
+          <div class="row g-2">
+            <div class="col-12 col-md-4">
+              <div class="dash-kpi">
+                <div class="dash-kpi-label">Unites</div>
+                <div class="dash-kpi-value">{{ stock.units }}</div>
+              </div>
+            </div>
+            <div class="col-12 col-md-4">
+              <div class="dash-kpi">
+                <div class="dash-kpi-label">Valeur</div>
+                <div class="dash-kpi-value">{{ '%.2f'|format(stock.stock_value) }} EUR</div>
+              </div>
+            </div>
+            <div class="col-12 col-md-4">
+              <div class="dash-kpi">
+                <div class="dash-kpi-label">Alertes actives</div>
+                <div class="dash-kpi-value">{{ stock.low_count }}</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="d-flex justify-content-between align-items-center gap-2 mt-3 dash-status-line">
+            <div>
+              {% if stock.low_count > 0 %}
+              <span class="badge rounded-pill text-bg-warning text-dark">Attention</span>
+              <span class="small text-secondary ms-2">{{ stock.low_count }} alerte(s)</span>
+              {% else %}
+              <span class="badge rounded-pill text-bg-success">Stock OK</span>
+              <span class="small text-secondary ms-2">aucune alerte</span>
+              {% endif %}
+            </div>
+            <span class="small text-secondary">{{ stock.refs }} ref(s) suivie(s)</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+
+<style>
+.dashboard-overview .dash-stock-card{
+  border:1px solid rgba(255,255,255,.08) !important;
+  border-radius:14px;
+}
+.dashboard-overview .dash-stock-alert{
+  box-shadow: inset 0 0 0 1px rgba(249,115,22,.28);
+}
+.dashboard-overview .dash-stock-ok{
+  box-shadow: inset 0 0 0 1px rgba(34,197,94,.2);
+}
+.dashboard-overview .dash-stock-icon{
+  width:34px;
+  height:34px;
+  border-radius:10px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  font-size:1rem;
+}
+.dashboard-overview .dash-stock-icon-alert{
+  background:rgba(249,115,22,.18);
+  color:#fb923c;
+}
+.dashboard-overview .dash-stock-icon-ok{
+  background:rgba(34,197,94,.18);
+  color:#4ade80;
+}
+.dashboard-overview .dash-kpi{
+  background:rgba(148,163,184,.12);
+  border:1px solid rgba(148,163,184,.22);
+  border-radius:10px;
+  padding:.65rem .7rem;
+}
+.dashboard-overview .dash-kpi-label{
+  font-size:.75rem;
+  color:#94a3b8;
+  text-transform:uppercase;
+  letter-spacing:.04em;
+}
+.dashboard-overview .dash-kpi-value{
+  font-weight:700;
+  font-size:1rem;
+}
+.dashboard-overview .dash-spotlight{
+  border:1px solid rgba(250,204,21,.28);
+  border-radius:12px;
+  padding:.7rem .75rem;
+  background:linear-gradient(180deg, rgba(250,204,21,.1), rgba(250,204,21,.03));
+}
+.dashboard-overview .dash-yellow-pill{
+  background:hsl(48 96% var(--badge-light, 78%));
+  color:#1a1400;
+  border:1px solid rgba(255,245,157,.9);
+  font-weight:700;
+}
+.dashboard-overview .dash-spot-chart-wrap{
+  overflow-x:auto;
+  padding-bottom:.2rem;
+}
+.dashboard-overview .dash-spot-chart{
+  display:grid;
+  grid-auto-flow:column;
+  grid-auto-columns:minmax(64px, 1fr);
+  align-items:end;
+  gap:.6rem;
+  min-width:max-content;
+  border:1px solid rgba(250,204,21,.28);
+  border-radius:10px;
+  padding:.6rem .6rem .5rem;
+  background:
+    repeating-linear-gradient(to top,
+      rgba(250,204,21,.10) 0 1px,
+      transparent 1px 28px),
+    linear-gradient(180deg, rgba(250,204,21,.12), rgba(250,204,21,.05));
+}
+.dashboard-overview .dash-spot-col{
+  width:64px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:.3rem;
+}
+.dashboard-overview .dash-spot-value{
+  font-size:.8rem;
+  font-weight:700;
+  color:#fde68a;
+  line-height:1;
+}
+.dashboard-overview .dash-spot-bar-zone{
+  height:138px;
+  width:100%;
+  display:flex;
+  align-items:flex-end;
+  justify-content:center;
+}
+.dashboard-overview .dash-spot-bar{
+  width:100%;
+  min-height:6px;
+  height:max(6px, var(--h, 5%));
+  border-radius:8px 8px 3px 3px;
+  border:1px solid rgba(255,245,157,.85);
+  background:linear-gradient(180deg, hsl(50 98% var(--bar-start, 86%)), hsl(43 98% var(--bar-end, 62%)));
+  box-shadow:
+    0 4px 10px rgba(250,204,21,.28),
+    inset 0 1px 0 rgba(255,255,255,.55);
+}
+.dashboard-overview .dash-spot-label{
+  width:100%;
+  font-size:.72rem;
+  text-align:center;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  color:#d1d5db;
+}
+.dashboard-overview .dash-status-line{
+  padding-top:.15rem;
+  border-top:1px dashed rgba(148,163,184,.28);
+}
+</style>
+{% endblock %}

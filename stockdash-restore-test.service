@@ -1,0 +1,11 @@
+[Unit]
+Description=StockDash weekly restore test
+
+[Service]
+Type=oneshot
+User=shynwo
+Environment=HOME=/home/shynwo
+Environment=PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+ExecStart=/usr/bin/python3 /home/shynwo/stockdash/scripts/backup_monitor.py restore-test
+Nice=10
+

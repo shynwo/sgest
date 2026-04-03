@@ -1,0 +1,531 @@
+:root{--bg:#0f1115;--panel:#151924;--muted:#98a2b3;--ok:#16a34a;}
+html,body{background:var(--bg);color:#e5e7eb}
+.sidebar{width:260px;background:#0e1420;min-height:100vh;position:fixed;left:0;top:0;padding:24px 16px}
+.content{margin-left:260px;padding:24px}
+.nav-link{display:block;padding:10px 12px;border-radius:10px;color:#d1d5db;text-decoration:none}
+.nav-link.active,.nav-link:hover{background:#1f2937;color:#fff}
+.table-dark{--bs-table-bg:#111827;--bs-table-color:#e5e7eb}
+.card-soft{background:rgba(42,42,59,.9);border:1px solid rgba(255,255,255,.08);border-radius:12px}
+.card-deep{background:#1b1f2a;border:1px solid rgba(255,255,255,.08);border-radius:12px}
+
+/* ====== Responsive overrides (prend le dessus sur les règles globales) ====== */
+
+/* Mobile & fenêtré (<992px) : pas de marge à gauche, pas de sidebar fixe */
+@media (max-width: 991.98px){
+  body{ padding-top:56px !important; }        /* navbar mobile */
+  .sidebar{
+    position: static !important;
+    width: auto !important;
+    min-height: 0 !important;
+    padding: 0 !important;
+    display: none !important;                 /* on la cache en mobile */
+  }
+  .content{
+    margin-left: 0 !important;
+    padding: 16px !important;
+  }
+}
+
+/* Desktop (≥992px) : sidebar fixe + contenu décalé */
+@media (min-width: 992px){
+  body{ padding-top:0 !important; }
+  .sidebar{
+    position: fixed !important;
+    left: 0; top: 0; bottom: 0;
+    width: 260px !important;
+    min-height: 100vh !important;
+    padding: 24px 16px !important;
+    display: block !important;
+  }
+  .content{
+    margin-left: 260px !important;
+    padding: 24px !important;
+  }
+}
+
+/* ====== Navbar (mobile) au même thème ====== */
+.app-navbar.navbar {
+  background:#0e1420 !important;
+  border-bottom:1px solid rgba(255,255,255,.08) !important;
+}
+.app-navbar .navbar-brand { color:#e5e7eb !important; }
+.app-navbar .navbar-toggler {
+  border-color:rgba(255,255,255,.15) !important;
+}
+.app-navbar .navbar-toggler-icon {
+  filter: invert(1) grayscale(100%);
+}
+
+/* ====== Offcanvas ====== */
+.offcanvas { 
+  background:#0e1420; 
+  color:#e5e7eb;
+}
+.offcanvas .offcanvas-title { color:#e5e7eb; }
+.offcanvas-brand { color:#e5e7eb; }
+.offcanvas .btn-close {
+  filter: invert(1) grayscale(100%);
+  opacity:.8;
+}
+.offcanvas-menu .nav-link.btn-link {
+  color:#d1d5db;
+  border-radius:8px;
+}
+.offcanvas-menu .nav-link.btn-link:hover,
+.offcanvas-menu .nav-link.active {
+  background:#1f2937;
+  color:#fff;
+}
+.list-sep {
+  color:#98a2b3;
+  font-size:.8rem;
+  margin:.75rem 0 .25rem;
+}
+
+/* ====== Tables & Cards (lissage général) ====== */
+.table-dark {
+  --bs-table-bg:#111827;
+  --bs-table-color:#e5e7eb;
+}
+.table-dark th, .table-dark td { vertical-align: middle; }
+.table-responsive { overflow-x:auto; }
+.card-soft{ background:rgba(42,42,59,.9); border:1px solid rgba(255,255,255,.08); border-radius:12px; }
+.card-deep{ background:#1b1f2a; border:1px solid rgba(255,255,255,.08); border-radius:12px; }
+
+/* ====== Overrides responsive définitifs ====== */
+@media (max-width: 991.98px){
+  body{ padding-top:56px !important; }
+  .sidebar{
+    position: static !important;
+    width: auto !important;
+    min-height: 0 !important;
+    padding: 0 !important;
+    display: none !important;
+  }
+  .content{
+    margin-left: 0 !important;
+    padding: 16px !important;
+  }
+}
+
+@media (min-width: 992px){
+  body{ padding-top:0 !important; }
+  .sidebar{
+    position: fixed !important;
+    left:0; top:0; bottom:0;
+    width:260px !important;
+    min-height:100vh !important;
+    padding:24px 16px !important;
+    display:block !important;
+  }
+  .content{
+    margin-left:260px !important;
+    padding:24px !important;
+  }
+}
+
+/* -- Fix burger icon (toujours blanc) -- */
+.app-navbar.navbar .navbar-toggler-icon{
+  /* SVG 3 barres blanches */
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(255,255,255,0.9)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e") !important;
+  opacity:.95;
+}
+.app-navbar.navbar .navbar-toggler{
+  border-color: rgba(255,255,255,.25) !important;
+  background: rgba(255,255,255,.02);
+}
+.app-navbar.navbar{
+  background:#0e1420 !important;
+  border-bottom:1px solid rgba(255,255,255,.08) !important;
+}
+.app-navbar .navbar-brand{ color:#e5e7eb !important; }
+
+/* -- Fix burger icon (toujours blanc) -- */
+.app-navbar.navbar .navbar-toggler-icon{
+  /* SVG 3 barres blanches */
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(255,255,255,0.9)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e") !important;
+  opacity:.95;
+}
+.app-navbar.navbar .navbar-toggler{
+  border-color: rgba(255,255,255,.25) !important;
+  background: rgba(255,255,255,.02);
+}
+.app-navbar.navbar{
+  background:#0e1420 !important;
+  border-bottom:1px solid rgba(255,255,255,.08) !important;
+}
+.app-navbar .navbar-brand{ color:#e5e7eb !important; }
+
+/* --- NAVBAR MOBILE : icône burger toujours blanche --- */
+.app-navbar.navbar .navbar-toggler-icon{
+  /* 3 barres blanches (svg inline) */
+  background-image:url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(255,255,255,0.95)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e") !important;
+  opacity:.95;
+}
+.app-navbar.navbar .navbar-toggler{
+  border-color: rgba(255,255,255,.25)!important;
+  background: rgba(255,255,255,.02);
+}
+.app-navbar.navbar{
+  background:#0e1420!important;
+  border-bottom:1px solid rgba(255,255,255,.08)!important;
+}
+.app-navbar .navbar-brand{color:#e5e7eb!important}
+
+/* --- OFFCANVAS MOBILE : thème sombre et lisible --- */
+#offcanvasSidebar{ 
+  background:#0e1420 !important; 
+  color:#e5e7eb;
+}
+#offcanvasSidebar .offcanvas-header{
+  border-bottom:1px solid rgba(255,255,255,.08);
+}
+#offcanvasSidebar .btn-close{
+  filter: invert(1) opacity(.85);
+}
+#offcanvasSidebar .offcanvas-menu a.nav-link{
+  color:#e5e7eb; 
+}
+#offcanvasSidebar .offcanvas-menu a.nav-link.active,
+#offcanvasSidebar .offcanvas-menu a.nav-link:hover{
+  background:#1f2937; 
+  color:#fff; 
+  border-radius:10px;
+}
+
+/* Séparateurs "Stocks", "Système" */
+#offcanvasSidebar .offcanvas-menu .list-sep{
+  color:#94a3b8; 
+  text-transform:uppercase; 
+  font-size:.75rem; 
+  letter-spacing:.04em; 
+  margin:.75rem 0 .25rem;
+}
+
+/* --- Burger toujours blanc --- */
+.app-navbar.navbar .navbar-toggler-icon{
+  background-image:url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(255,255,255,0.95)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e") !important;
+}
+.app-navbar.navbar .navbar-toggler{ border-color:rgba(255,255,255,.25)!important }
+
+/* --- Offcanvas en vrai dark lisible --- */
+#offcanvasSidebar{
+  --bs-offcanvas-bg:#0e1420 !important;
+  --bs-offcanvas-color:#e5e7eb !important;
+  background:var(--bs-offcanvas-bg)!important;
+  color:var(--bs-offcanvas-color)!important;
+}
+#offcanvasSidebar .offcanvas-header{
+  border-bottom:1px solid rgba(255,255,255,.08);
+}
+#offcanvasSidebar .btn-close{ filter: invert(1) opacity(.9); }
+
+#offcanvasSidebar .offcanvas-menu a.nav-link{
+  color:inherit;
+}
+#offcanvasSidebar .offcanvas-menu a.nav-link:hover,
+#offcanvasSidebar .offcanvas-menu a.nav-link.active{
+  background:#1f2937; color:#fff; border-radius:10px;
+}
+#offcanvasSidebar .list-sep{
+  color:#94a3b8; text-transform:uppercase; letter-spacing:.04em;
+  font-size:.75rem; margin:.75rem 0 .25rem;
+}
+
+/* --- Burger toujours blanc (patch 2025-08-30) --- */
+.app-navbar .navbar-toggler-icon {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(255,255,255,0.95)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e") !important;
+  background-size: 100% 100%;
+  width: 1.5em;
+  height: 1.5em;
+  opacity: .95;
+}
+.app-navbar .navbar-toggler {
+  border-color: rgba(255,255,255,.25) !important;
+  background: rgba(255,255,255,.02);
+}
+.app-navbar .navbar-toggler:hover {
+  background: rgba(255,255,255,.08); /* léger hover pour lisibilité */
+}
+
+.app-navbar .navbar-toggler{
+  border-color: rgba(255,255,255,.25) !important;
+  background: rgba(255,255,255,.02);
+}
+.app-navbar .navbar-toggler:hover{
+  background: rgba(255,255,255,.08);
+}
+
+/* --- Burger toujours blanc (patch fiable) --- */
+.app-navbar .navbar-toggler-icon{
+  background-image:url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(255,255,255,0.95)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e") !important;
+  background-size:100% 100%;
+  width:1.5em; height:1.5em; opacity:.95;
+}
+.app-navbar .navbar-toggler{
+  border-color: rgba(255,255,255,.25) !important;
+  background: rgba(255,255,255,.02);
+}
+
+/* Offcanvas thème sombre lisible */
+#offcanvasSidebar{
+  background:#0e1420; color:#e5e7eb;
+  --bs-offcanvas-bg:#0e1420; --bs-offcanvas-color:#e5e7eb;
+}
+#offcanvasSidebar .offcanvas-header{
+  border-bottom:1px solid rgba(255,255,255,.08);
+}
+#offcanvasSidebar .btn-close{ filter: invert(1) grayscale(1); opacity:.85; }
+#offcanvasSidebar .offcanvas-menu .nav-link{
+  display:block; padding:.55rem .9rem; border-radius:.6rem;
+  color:#d1d5db; text-decoration:none;
+}
+#offcanvasSidebar .offcanvas-menu .nav-link:hover,
+#offcanvasSidebar .offcanvas-menu .nav-link.active{
+  background:#1f2937; color:#fff;
+}
+#offcanvasSidebar .offcanvas-menu .menu-sep{
+  color:#94a3b8; text-transform:uppercase; letter-spacing:.04em;
+  font-size:.75rem; margin:.6rem .1rem .25rem;
+}
+
+/* Bouton “Télécharger” : propre et stable sur fond sombre */
+.table .btn-outline-light{
+  color:#e6eefc; border-color:#c0cfee; background:transparent;
+}
+.table .btn-outline-light:hover,
+.table .btn-outline-light:focus{
+  color:#fff; border-color:#d6e2ff; background:#1e293b; box-shadow:none;
+}
+
+/* === Harmonisation des boutons d'actions (Télécharger / Supprimer) === */
+.actions-cell{ display:flex; justify-content:flex-end; gap:.5rem; }
+.actions-cell .btn{ min-width: 135px; }          /* même largeur pour les deux */
+@media (max-width: 768px){
+  .actions-cell{ justify-content:flex-start; }
+  .actions-cell .btn{ min-width:auto; }
+}
+
+/* === Harmonisation des boutons d'actions (Télécharger / Supprimer) === */
+.actions-cell{ display:flex; justify-content:flex-end; gap:.5rem; }
+.actions-cell .btn{ min-width: 135px; }          /* même largeur pour les deux */
+@media (max-width: 768px){
+  .actions-cell{ justify-content:flex-start; }
+  .actions-cell .btn{ min-width:auto; }
+}
+
+/* === Uniformisation des actions (Télécharger / Supprimer) === */
+.actions-cell{ display:flex; justify-content:flex-end; gap:.5rem; }
+.actions-cell .btn{ min-width:135px; text-align:center; }
+@media (max-width: 768px){
+  .actions-cell{ justify-content:flex-start; }
+  .actions-cell .btn{ min-width:auto; }
+}
+
+/* === Bouton Télécharger en blanc uniforme === */
+.actions-cell .btn-outline-light{
+  color:#f8f9fa;
+  border:1px solid #f8f9fa;
+  background:transparent;
+}
+.actions-cell .btn-outline-light:hover,
+.actions-cell .btn-outline-light:focus{
+  color:#000;
+  background:#f8f9fa;
+  border-color:#f8f9fa;
+}
+.actions-cell{ display:flex; justify-content:flex-end; gap:.5rem; }
+.actions-cell .btn{ min-width:135px; text-align:center; }
+@media (max-width:768px){
+  .actions-cell{ justify-content:flex-start; }
+  .actions-cell .btn{ min-width:auto; }
+}
+
+/* --- Harmonisation Actions --- */
+.actions-cell{ display:flex; justify-content:flex-end; gap:.5rem; }
+.actions-cell .btn{ min-width:135px; text-align:center; }
+
+/* Télécharger = blanc */
+.actions-cell .btn-outline-light{
+  color:#f8f9fa;
+  border:1px solid #f8f9fa;
+  background:transparent;
+}
+.actions-cell .btn-outline-light:hover,
+.actions-cell .btn-outline-light:focus{
+  color:#000;
+  background:#f8f9fa;
+  border-color:#f8f9fa;
+}
+
+/* Supprimer = rouge */
+.actions-cell .btn-outline-danger{
+  color:#dc3545;
+  border:1px solid #dc3545;
+  background:transparent;
+}
+.actions-cell .btn-outline-danger:hover,
+.actions-cell .btn-outline-danger:focus{
+  color:#fff;
+  background:#dc3545;
+  border-color:#dc3545;
+}
+
+@media (max-width:768px){
+  .actions-cell{ justify-content:flex-start; }
+  .actions-cell .btn{ min-width:auto; }
+}
+
+/* --- Harmonisation Actions --- */
+.actions-cell{ display:flex; justify-content:flex-end; gap:.5rem; }
+.actions-cell .btn{ min-width:135px; text-align:center; }
+
+/* Télécharger = blanc */
+.actions-cell .btn-outline-light{
+  color:#f8f9fa;
+  border:1px solid #f8f9fa;
+  background:transparent;
+}
+.actions-cell .btn-outline-light:hover,
+.actions-cell .btn-outline-light:focus{
+  color:#000;
+  background:#f8f9fa;
+  border-color:#f8f9fa;
+}
+
+/* Supprimer = rouge */
+.actions-cell .btn-outline-danger{
+  color:#dc3545;
+  border:1px solid #dc3545;
+  background:transparent;
+}
+.actions-cell .btn-outline-danger:hover,
+.actions-cell .btn-outline-danger:focus{
+  color:#fff;
+  background:#dc3545;
+  border-color:#dc3545;
+}
+
+@media (max-width:768px){
+  .actions-cell{ justify-content:flex-start; }
+  .actions-cell .btn{ min-width:auto; }
+}
+
+/* === Bouton Télécharger (blanc, outline) =============================== */
+.table-dark .btn-download,
+.actions-cell .btn-download{
+  color: #e6eefc !important;
+  border: 1px solid #c0cfee !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+.table-dark .btn-download:hover,
+.table-dark .btn-download:focus{
+  color: #ffffff !important;
+  border-color: #d6e2ff !important;
+  background: #1e293b !important; /* léger fond sombre au survol */
+  box-shadow: none !important;
+}
+.btn-download .bi{ margin-right:.4rem; }  /* espace icône/texte */
+/* ====================================================================== */
+
+/* Actions: largeur stable en desktop, fluide en mobile */
+.actions-cell{display:flex;justify-content:flex-end;gap:.5rem}
+.actions-cell .btn{min-width:120px;text-align:center}
+@media (max-width:768px){.actions-cell{justify-content:flex-start}.actions-cell .btn{min-width:auto}}
+
+/* --- Burger toujours blanc (override fort) --- */
+.app-navbar .navbar-toggler-icon{
+  background-image:url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(255,255,255,0.95)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e") !important;
+  background-size: 100% 100% !important;
+  opacity:.98 !important;
+  filter:none !important;
+}
+.app-navbar .navbar-toggler{
+  border-color: rgba(255,255,255,.25)!important;
+  background: rgba(255,255,255,.02);
+}
+.app-navbar .navbar-toggler:hover{
+  background: rgba(255,255,255,.08);
+}
+
+/* ===== Actions (table Archives & futurs écrans) ===== */
+.actions-cell{ display:flex; justify-content:flex-end; gap:.5rem; }
+.actions-cell .btn{
+  min-width:130px; text-align:center; border-radius:10px;
+  display:flex; align-items:center; justify-content:center; gap:.4rem;
+  padding:.45rem .75rem; font-weight:500; line-height:1.2; white-space:nowrap;
+}
+/* Icônes à droite par défaut (télécharger) */
+.actions-cell .btn .bi{ order:2; margin-left:.35rem; }
+
+/* --- Télécharger : contour blanc par défaut, HOVER VERT --- */
+.actions-cell a.btn.btn-download{
+  color:#ffffff !important;
+  background:transparent !important;
+  border:1px solid #ffffff !important;
+}
+.actions-cell a.btn.btn-download:hover,
+.actions-cell a.btn.btn-download:focus{
+  color:#ffffff !important;
+  background:#16a34a !important;      /* vert plein */
+  border-color:#16a34a !important;     /* contour vert */
+  box-shadow:none !important;
+}
+
+/* --- Supprimer : contour ROUGE, hover ROUGE plein --- */
+.actions-cell .btn-outline-danger{
+  color:#ef4444 !important;
+  border:1px solid #ef4444 !important;
+  background:transparent !important;
+}
+.actions-cell .btn-outline-danger:hover,
+.actions-cell .btn-outline-danger:focus{
+  color:#ffffff !important;
+  background:#ef4444 !important;
+  border-color:#ef4444 !important;
+  box-shadow:none !important;
+}
+/* === Actions: position des icônes par bouton === */
+.actions-cell a.btn.btn-download .bi{
+  order: 2;         /* icône à droite */
+  margin-left: .35rem;
+  margin-right: 0;
+}
+.actions-cell .btn-outline-danger .bi{
+  order: 0;         /* icône à gauche */
+  margin-right: .35rem;
+  margin-left: 0;
+}
+
+/* Renforce les couleurs des contours au repos (au cas où) */
+.actions-cell a.btn.btn-download{
+  border-color: #fff !important;
+  color: #fff !important;
+}
+.actions-cell .btn.btn-outline-danger{
+  border-color: #ef4444 !important;
+  color: #ef4444 !important;
+}
+
+/* === FIX burger: supprimer le gros halo au clic/maintien === */
+nav#mainNav.app-navbar.navbar .navbar-toggler {
+  --bs-navbar-toggler-focus-width: 0rem !important;
+}
+nav#mainNav.app-navbar.navbar .navbar-toggler:focus,
+nav#mainNav.app-navbar.navbar .navbar-toggler:focus-visible,
+nav#mainNav.app-navbar.navbar .navbar-toggler:active,
+nav#mainNav.app-navbar.navbar .navbar-toggler[aria-expanded="true"]{
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+/* === Page 404 Hero === */
+.error-hero{
+  background: linear-gradient(180deg, rgba(255,255,255,.03), rgba(0,0,0,0));
+  border-radius: 12px;
+}
+@media (max-width: 576px){
+  .error-hero .display-1{ font-size: 3rem; }
+  .error-hero .display-5{ font-size: 1.75rem; }
+}

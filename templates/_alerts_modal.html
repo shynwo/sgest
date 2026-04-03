@@ -1,0 +1,21 @@
+{# _alerts_modal.html #}
+<div class="modal fade" id="alertsModal" tabindex="-1" aria-labelledby="alertsModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg">
+    <div class="modal-content bg-dark border">
+      <div class="modal-header">
+        <h5 class="modal-title" id="alertsModalLabel"><i class="bi bi-bell me-2"></i>Alertes stock</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fermer"></button>
+      </div>
+      <div class="modal-body">
+        <div id="alertsModalBody" class="small text-body">
+          <div class="text-muted">Chargement…</div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <a class="btn btn-outline-light" href="/stock/impression3d"><i class="bi bi-printer me-2"></i>Impression 3D</a>
+        <a class="btn btn-outline-light" href="/stock/broderie"><i class="bi bi-scissors me-2"></i>Broderie</a>
+        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Fermer</button>
+      </div>
+    </div>
+  </div>
+</div>

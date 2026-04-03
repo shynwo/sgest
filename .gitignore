@@ -1,0 +1,43 @@
+
+# Python
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+
+# Env & secrets
+.env
+.env.*
+!.env.example
+
+# Bases locales
+*.db
+*.sqlite3
+data/*.db
+data/**/*.db
+
+# Sauvegardes / bruit
+.bak_*/
+app.py.bak.*
+=
+*.log
+
+# OS / IDE
+.DS_Store
+.idea/
+.vscode/
+*.swp
+
+
+
+# Sauvegardes nommées avec tiret (.bak-YYYY)
+.bak-*/
+
+# Copies SQLite planifiées (ne pas versionner)
+**/broderie.db.bak.*
+**/impression3d.db.bak.*
+**/business.db.bak.*
+**/*.db.bak.*
+

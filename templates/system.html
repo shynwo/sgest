@@ -1,0 +1,259 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container-fluid py-3">
+  {% with messages = get_flashed_messages(with_categories=True) %}
+    {% if messages %}
+      {% for cat, msg in messages %}
+        <div class="alert alert-{{ 'warning' if cat == 'warning' else 'success' }} border-0" role="alert">{{ msg }}</div>
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
+
+  <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+    <div>
+      <h2 class="h4 mb-1">Systeme</h2>
+      <p class="text-secondary mb-0">Securite, sauvegarde automatique et maintenance.</p>
+    </div>
+  </div>
+
+  <div class="row g-3 mb-3">
+    <div class="col-12 col-xl-5">
+      <div class="card h-100">
+        <div class="card-body">
+          <h5 class="card-title mb-3"><i class="bi bi-shield-check me-2"></i>Sauvegarde automatique</h5>
+
+          <div class="d-flex flex-wrap gap-2 mb-2">
+            <span class="badge {{ 'text-bg-success' if backup_timer.enabled else 'text-bg-secondary' }}">
+              Timer {{ 'active' if backup_timer.enabled else 'inactif' }}
+            </span>
+            <span class="badge {{ 'text-bg-success' if backup_timer.active else 'text-bg-warning' }}">
+              Etat {{ 'en service' if backup_timer.active else 'a verifier' }}
+            </span>
+            <span class="badge text-bg-primary">Frequence 12h</span>
+            <span class="badge text-bg-dark">Max {{ backups_limit }} fichiers</span>
+          </div>
+
+          <div class="small text-secondary">Derniere sauvegarde</div>
+          <div class="fw-semibold mb-2" id="last-bk">{{ last_backup }}</div>
+          <div class="small text-secondary">Prochaine execution</div>
+          <div class="fw-semibold">{{ backup_timer.next_run }}</div>
+
+          <div class="d-flex flex-wrap gap-2 mt-3">
+            <button id="btn-backup" type="button" class="btn btn-sm btn-primary">
+              <i class="bi bi-cloud-arrow-up me-1"></i>Lancer maintenant
+            </button>
+            <button id="btn-restore" type="button" class="btn btn-sm btn-outline-secondary">
+              <i class="bi bi-arrow-counterclockwise me-1"></i>Restaurer
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-12 col-md-6 col-xl-4">
+      <div class="card h-100">
+        <div class="card-body">
+          <h5 class="card-title mb-3"><i class="bi bi-hdd-fill me-2"></i>Espace disque & RAM</h5>
+          <div class="progress mb-2" style="height:12px">
+            <div id="disk-bar" class="progress-bar" role="progressbar"></div>
+          </div>
+          <div class="small text-secondary">
+            Disque utilise <strong>{{ disk.used_human }}</strong> / <strong>{{ disk.total_human }}</strong>
+          </div>
+          <div class="small text-secondary">
+            Disque libre <strong>{{ disk.free_human }}</strong> ({{ disk.used_pct }}% occupe)
+          </div>
+
+          <hr class="my-3">
+
+          <div class="progress mb-2" style="height:12px">
+            <div id="ram-bar" class="progress-bar" role="progressbar"></div>
+          </div>
+          <div class="small text-secondary">
+            RAM utilisee <strong>{{ ram.used_human }}</strong> / <strong>{{ ram.total_human }}</strong>
+          </div>
+          <div class="small text-secondary">
+            RAM libre <strong>{{ ram.free_human }}</strong> ({{ ram.used_pct }}% occupe)
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-12 col-md-6 col-xl-3">
+      <div class="card h-100">
+        <div class="card-body">
+          <h5 class="card-title mb-2"><i class="bi bi-cpu-fill me-2"></i>Machine</h5>
+          <div class="small text-secondary mb-2">{{ machine.model }}</div>
+          <div class="small text-secondary">CPU: <strong>{{ machine.cpu }}</strong></div>
+          <div class="small text-secondary">Architecture: <strong>{{ machine.arch }}</strong></div>
+          <div class="small text-secondary">Cores: <strong>{{ machine.cores }}</strong></div>
+          <div class="small text-secondary">Kernel: <strong>{{ machine.kernel }}</strong></div>
+          <div class="small text-secondary mt-2">RAM totale: <strong>{{ ram.total_human }}</strong></div>
+          <div class="small text-secondary">Disque total: <strong>{{ disk.total_human }}</strong></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-body">
+      <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-2">
+        <h5 class="card-title m-0"><i class="bi bi-archive-fill me-2"></i>Archives de sauvegarde</h5>
+        <div class="small text-secondary">Affichage des {{ backups_limit }} plus recentes</div>
+      </div>
+
+      <div class="table-responsive">
+        <table class="table table-sm align-middle mb-0">
+          <thead>
+            <tr>
+              <th>Archive</th>
+              <th>Taille</th>
+              <th>Date</th>
+              <th class="text-end actions-col">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="bk-tbody">
+            {% for b in backups %}
+            <tr data-name="{{ b.name }}">
+              <td><div class="text-truncate" style="max-width:560px" title="{{ b.name }}">{{ b.name }}</div></td>
+              <td>{{ b.size }}</td>
+              <td>{{ b.date }}</td>
+              <td class="text-end actions-col">
+                <div class="actions-wrap">
+                  <a class="btn btn-sm btn-outline-light" href="{{ url_for('download_backup', name=b.name) }}">
+                    <i class="bi bi-download me-1"></i>Telecharger
+                  </a>
+                  <button class="btn btn-sm btn-outline-danger btn-del" data-name="{{ b.name }}">
+                    <i class="bi bi-trash me-1"></i>Supprimer
+                  </button>
+                </div>
+              </td>
+            </tr>
+            {% else %}
+            <tr><td colspan="4" class="text-center text-secondary py-4">Aucune archive.</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+.actions-col{
+  width: 230px;
+  min-width: 230px;
+}
+.actions-wrap{
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: .5rem;
+  flex-wrap: nowrap;
+  white-space: nowrap;
+}
+.actions-wrap .btn{
+  white-space: nowrap;
+}
+</style>
+
+<div id="backup-overlay" class="position-fixed top-0 start-0 w-100 h-100 d-none" style="background:rgba(0,0,0,.45); z-index:1050;">
+  <div class="d-flex justify-content-center align-items-center h-100">
+    <div class="text-center">
+      <div class="spinner-border" role="status"></div>
+      <div class="mt-2">Operation en cours...</div>
+    </div>
+  </div>
+</div>
+
+<script>
+const overlay = document.getElementById("backup-overlay");
+const btnBackup = document.getElementById("btn-backup");
+const btnRestore = document.getElementById("btn-restore");
+const diskBar = document.getElementById("disk-bar");
+const ramBar = document.getElementById("ram-bar");
+
+if (diskBar) {
+  const usedPct = parseFloat("{{ disk.used_pct }}");
+  const pct = isFinite(usedPct) ? usedPct : 0;
+  diskBar.style.width = pct + "%";
+  diskBar.setAttribute("aria-valuenow", pct);
+  if (pct < 50) diskBar.classList.add("bg-success");
+  else if (pct < 80) diskBar.classList.add("bg-warning");
+  else diskBar.classList.add("bg-danger");
+}
+if (ramBar) {
+  const usedPct = parseFloat("{{ ram.used_pct }}");
+  const pct = isFinite(usedPct) ? usedPct : 0;
+  ramBar.style.width = pct + "%";
+  ramBar.setAttribute("aria-valuenow", pct);
+  if (pct < 50) ramBar.classList.add("bg-success");
+  else if (pct < 80) ramBar.classList.add("bg-warning");
+  else ramBar.classList.add("bg-danger");
+}
+
+function setBusy(v){ overlay.classList.toggle("d-none", !v); }
+
+btnBackup?.addEventListener("click", async () => {
+  setBusy(true);
+  try {
+    const r = await fetch("/system/backup-now", { method: "POST" });
+    const j = await r.json();
+    if (!j.ok) {
+      alert("Echec du lancement de la sauvegarde.");
+      return;
+    }
+    setTimeout(() => location.reload(), 1300);
+  } catch (_e) {
+    alert("Erreur reseau pendant la sauvegarde.");
+  } finally {
+    setBusy(false);
+  }
+});
+
+btnRestore?.addEventListener("click", async () => {
+  const row = document.querySelector("#bk-tbody tr[data-name]");
+  const suggested = row?.getAttribute("data-name") || "";
+  const name = prompt("Archive a restaurer :", suggested);
+  if (!name) return;
+  setBusy(true);
+  try {
+    const r = await fetch("/system/restore", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name })
+    });
+    const j = await r.json();
+    if (j.ok) alert("Restauration lancee.");
+    else alert("Restauration impossible: " + (j.error || "erreur"));
+  } catch (_e) {
+    alert("Erreur reseau pendant la restauration.");
+  } finally {
+    setBusy(false);
+  }
+});
+
+document.querySelectorAll(".btn-del").forEach((btn) => {
+  btn.addEventListener("click", async () => {
+    const name = btn.getAttribute("data-name") || "";
+    if (!name) return;
+    if (!confirm("Supprimer cette archive ?")) return;
+    try {
+      const r = await fetch("/system/backup-delete", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name })
+      });
+      const j = await r.json();
+      if (!j.ok) {
+        alert("Suppression impossible.");
+        return;
+      }
+      document.querySelector('tr[data-name="' + name.replace(/"/g, '\\"') + '"]')?.remove();
+    } catch (_e) {
+      alert("Erreur reseau pendant la suppression.");
+    }
+  });
+});
+</script>
+{% endblock %}

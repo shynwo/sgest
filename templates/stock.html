@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% block content %}
+  <!-- Mini KPI -->
+  <div class="row g-3 mb-1">
+    <div class="col-6 col-md-3">
+      <div class="card card-soft h-100"><div class="card-body py-2">
+        <div class="text-muted small">Références</div>
+        <div class="fs-3 fw-semibold">{{ kpi.total_refs }}</div>
+      </div></div>
+    </div>
+    <div class="col-6 col-md-3">
+      <div class="card card-soft h-100"><div class="card-body py-2">
+        <div class="text-muted small">OK</div>
+        <div class="fs-3 fw-semibold text-success">{{ kpi.ok }}</div>
+      </div></div>
+    </div>
+    <div class="col-6 col-md-3">
+      <div class="card card-soft h-100"><div class="card-body py-2">
+        <div class="text-muted small">Bas</div>
+        <div class="fs-3 fw-semibold text-warning">{{ kpi.bas }}</div>
+      </div></div>
+    </div>
+    <div class="col-6 col-md-3">
+      <div class="card card-soft h-100"><div class="card-body py-2">
+        <div class="text-muted small">Ruptures</div>
+        <div class="fs-3 fw-semibold text-danger">{{ kpi.ruptures }}</div>
+      </div></div>
+    </div>
+  </div>
+
+  <!-- Filtres simples -->
+  <div class="d-flex flex-wrap gap-2 mb-2">
+    <a class="btn btn-sm {{ 'btn-light' if segment=='all' else 'btn-outline-light' }}" href="/stock/all">Tous</a>
+    <a class="btn btn-sm {{ 'btn-light' if segment=='broderie' else 'btn-outline-light' }}" href="/stock/broderie">Broderie</a>
+    <a class="btn btn-sm {{ 'btn-light' if segment=='impression3d' else 'btn-outline-light' }}" href="/stock/impression3d">Impression 3D</a>
+  </div>
+
+  <!-- Tableau -->
+  <div class="card card-deep">
+    <div class="card-body">
+      <div class="table-responsive">
+        <table class="table table-dark table-striped align-middle mb-0">
+          <thead>
+            <tr>
+              <th style="min-width:220px">Produit</th>
+              <th class="text-center">Quantité</th>
+              <th class="text-center">État</th>
+              <th>Dernier mouvement</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for p in items %}
+            {% set st = status_of(p.qty) %}
+            <tr>
+              <td>{{ p.name }}</td>
+              <td class="text-center">{{ p.qty }}</td>
+              <td class="text-center">
+                {% if st == 'ok' %}
+                  <span class="badge bg-success">OK</span>
+                {% elif st == 'bas' %}
+                  <span class="badge bg-warning text-dark">Bas</span>
+                {% else %}
+                  <span class="badge bg-danger">Rupture</span>
+                {% endif %}
+              </td>
+              <td>{{ p.last }}</td>
+            </tr>
+            {% endfor %}
+            {% if items|length == 0 %}
+            <tr><td colspan="4" class="text-center text-muted py-4">Aucun article</td></tr>
+            {% endif %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+{% endblock %}

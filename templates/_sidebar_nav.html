@@ -1,0 +1,46 @@
+{# -------- Helpers -------- #}
+{% macro active_for(prefix) -%}
+  {%- set p = (request.path.rstrip('/') or '/') -%}
+  {%- set px = (prefix.rstrip('/') or '/') -%}
+  {{ ' active' if p == px or (px != '/' and p.startswith(px ~ '/')) else '' }}
+{%- endmacro %}
+
+{# -------- Menu -------- #}
+<nav class="nav flex-column">
+  <a class="nav-link{{ active_for('/') }}" href="/">
+    <i class="bi bi-bar-chart-fill me-2"></i>Dashboard
+  </a>
+
+  <div class="menu-sep text-muted small mt-3">Stocks</div>
+  <a class="nav-link{{ active_for('/stock/broderie') }}" href="/stock/broderie">
+    <i class="bi bi-scissors me-2"></i>Broderie
+  </a>
+  <a class="nav-link{{ active_for('/stock/impression3d') }}" href="/stock/impression3d">
+    <i class="bi bi-diagram-3 me-2"></i>Impression 3D
+  </a>
+
+  <div class="menu-sep text-muted small mt-3">Outils</div>
+  <a class="nav-link{{ active_for('/outils/calculateur') }}" href="/outils/calculateur">
+    <i class="bi bi-calculator me-2"></i>Calculateur
+  </a>
+  <a class="nav-link{{ active_for('/outils/gestion') }}" href="/outils/gestion">
+    <i class="bi bi-sliders me-2"></i>Gestion
+  </a>
+  <a class="nav-link{{ active_for('/outils/gain') }}" href="/outils/gain">
+    <i class="bi bi-cash-coin me-2"></i>Gain
+  </a>
+  <a class="nav-link{{ active_for('/outils/catalogues') }}" href="/outils/catalogues">
+    <i class="bi bi-collection me-2"></i>Catalogue
+  </a>
+
+  <div class="menu-sep text-muted small mt-3">Systeme</div>
+  <a class="nav-link{{ ' active' if request.path == '/system' else '' }}" href="/system">
+    <i class="bi bi-gear-fill me-2"></i>Systeme
+  </a>
+  <a class="nav-link{{ active_for('/system/integrations') }}" href="/system/integrations">
+    <i class="bi bi-plug-fill me-2"></i>Integrations
+  </a>
+  <a class="nav-link{{ active_for('/system/profile') }}" href="/system/profile">
+    <i class="bi bi-person-gear me-2"></i>Profil
+  </a>
+</nav>

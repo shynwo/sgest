@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="fr" data-bs-theme="dark">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>{{ title or "Sgest" }}</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet" />
+  <link href="{{ url_for('static', filename='css/theme.css') }}?v={{ ASSET_VER }}" rel="stylesheet" />
+      <link rel="stylesheet" href="{{ url_for('static', filename='css/app-responsive.css') }}?v=6">
+  {% macro is_active(prefix) -%}
+  {%- if request.path == prefix or request.path.startswith(prefix ~ "/") -%} active{%- endif -%}
+  {%- endmacro %}
+<style id="nav-active-style">
+  /* Pilule blanche pour le lien actif dans la sidebar */
+  a.nav-link.active{
+    background: #fff !important;
+    color: var(--bs-body-color,#111) !important;
+    border-radius: 12px !important;
+    font-weight: 600 !important;
+    box-shadow: none !important;
+  }
+</style>
+</head>
+<style id="sgest-active-pill">
+/* Lien actif en PILULE BLANCHE dans la sidebar / nav verticale */
+aside .nav-link.active,
+.sidebar .nav-link.active,
+#sidebar .nav-link.active,
+nav.nav.flex-column .nav-link.active,
+nav.flex-column .nav-link.active {
+  background-color: #ffffff !important;
+  background-image: none !important;
+  color: #0b0f19 !important;            /* texte foncé lisible */
+  border-radius: 999px !important;       /* effet pilule */
+  box-shadow: none !important;
+  border: 0 !important;
+}
+
+/* Écrase tout résidu vert du thème */
+aside .nav-link.active.bg-success,
+.sidebar .nav-link.active.bg-success,
+#sidebar .nav-link.active.bg-success,
+nav.flex-column .nav-link.bg-success,
+nav.flex-column .bg-success {
+  background-color: #ffffff !important;
+  background-image: none !important;
+  color: #0b0f19 !important;
+}
+</style>
+<body>
+
+<!-- Top Navbar (Bootstrap 5) -->
+<nav id="mainNav" class="app-navbar d-lg-none navbar navbar-dark bg-dark fixed-top border-bottom">
+  <div class="container-fluid">
+    <button class="navbar-toggler me-2" type="button"
+            data-bs-toggle="offcanvas" data-bs-target="#offcanvasSidebar"
+            aria-controls="offcanvasSidebar" aria-label="Ouvrir le menu">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <a class="navbar-brand fw-semibold" href="#">Sgest</a>
+  </div>
+</nav>
+
+<!-- Offcanvas mobile -->
+<div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasSidebar" aria-labelledby="offcanvasSidebarLabel">
+  <div class="offcanvas-header">
+    <h5 class="offcanvas-title" id="offcanvasSidebarLabel">Sgest 1.0</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Fermer"></button>
+  </div>
+  <div id="offcanvasBody" class="offcanvas-body p-2">
+    <!-- Version mobile du menu, rendue côté serveur -->
+    <div class="offcanvas-menu list-group list-group-flush py-1">
+      {% include "_sidebar_nav.html" %}
+    </div>
+  </div>
+</div>
+</div>
+
+  <aside class="sidebar d-none d-lg-block">
+  <h4 class="text-light mb-4">Sgest</h4>
+  {% include "_sidebar_nav.html" %}
+</aside>
+  <div id="mini-toolbar" class="container-fluid px-3 py-2 border-bottom d-flex justify-content-end align-items-center gap-2">
+    <a href="/stock/impression3d" class="btn btn-sm btn-outline-light position-relative" title="Alertes stock">
+      <i class="bi bi-bell"></i>
+      <span id="badge-alerts" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger d-none">0</span>
+    </a>
+    <a href="#" class="btn btn-sm btn-outline-light position-relative" title="Commandes">
+      <i class="bi bi-envelope"></i>
+      <span id="badge-orders" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-primary d-none">0</span>
+    </a>
+  </div>{% include "_toolbar.html" %}
+
+
+
+  <main class="content">
+      {% include "_topbar.html" %}
+  {% block content %}{% endblock %}
+  </main>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="{{ url_for('static', filename='js/app-nav.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/app-nav.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/app-actions.js') }}"></script>
+<script>
+/*mark-impr3d-active*/
+(function(){
+  function norm(p){return (p||"").replace(/\/+$/,"")}
+  document.addEventListener("DOMContentLoaded", function(){
+    var path = norm(location.pathname);
+    if(!path.startsWith("/stock/impression3d")) return;
+    var sel = ["aside a[href]",".sidebar a[href]","nav a[href]",".list-group a[href]",".nav a[href]"]; 
+    var links = document.querySelectorAll(sel.join(","));
+    var found=null;
+    links.forEach(function(a){
+      try{
+        var href = norm(new URL(a.getAttribute("href"), location.origin).pathname);
+        if(href==="/stock/impression3d" || href.startsWith("/stock/impression3d/")) found=a;
+      }catch(e){}
+    });
+    if(!found) return;
+    // désactive les autres actifs
+    document.querySelectorAll(".sidebar .active, nav .active, .list-group .active").forEach(function(x){x.classList.remove("active")});
+    // active notre lien + son parent éventuel
+    found.classList.add("active");
+    var li = found.closest(".list-group-item, .nav-item, li");
+    if(li) li.classList.add("active");
+  });
+})();
+</script>  <script src="{{ url_for('static', filename='js/badges.js') }}?v={{ ASSET_VER }}"></script>
+  <script src="{{ url_for(\'static\', filename=\'js/badges.js\') }}?v={{ ASSET_VER }}"></script>
+  <script src="{{ url_for(\'static\', filename=\'js/badges.js\') }}?v={{ ASSET_VER }}"></script>
+</body>
+</html>

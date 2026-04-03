@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block content %}
+
+<section class="d-flex align-items-start min-vh-100 py-5 error-hero">
+  <div class="container py-5 mt-5">
+    <div class="row align-items-center g-4">
+      
+      <!-- Anim -->
+      <div class="col-md-6 order-md-2">
+        <div class="lc-block text-center text-md-end">
+          <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
+          <lottie-player
+            src="https://assets9.lottiefiles.com/packages/lf20_kcsr6fcp.json"
+            background="transparent"
+            speed="1"
+            loop
+            autoplay
+            style="max-width: 380px; width: 100%; height: auto">
+          </lottie-player>
+        </div>
+      </div>
+
+      <!-- Texte -->
+      <div class="col-md-6 text-center text-md-start">
+        <h1 class="display-5 fw-semibold text-secondary-emphasis mb-2">Oups…</h1>
+        <h2 class="display-1 fw-bold text-muted mb-3">Erreur 404</h2>
+        <p class="lead text-muted mb-4">
+          La page que vous recherchez a été déplacée, supprimée… ou n’a peut-être jamais existé.
+        </p>
+
+        <div class="d-flex flex-wrap gap-2 justify-content-center justify-content-md-start">
+          <a class="btn btn-secondary btn-lg d-inline-flex align-items-center gap-2"
+             href="{{ url_for('dashboard') }}">
+            <i class="bi bi-house-door"></i>
+            Retour à l’accueil
+          </a>
+          <button type="button" class="btn btn-outline-light btn-lg d-inline-flex align-items-center gap-2"
+                  onclick="history.back()">
+            <i class="bi bi-arrow-left"></i>
+            Page précédente
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

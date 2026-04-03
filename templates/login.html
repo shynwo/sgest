@@ -1,0 +1,486 @@
+<!doctype html>
+<html lang="fr" data-bs-theme="dark">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="csrf-token" content="{{ csrf_token() }}">
+  <title>{{ title or "Connexion" }}</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet" />
+  <style>
+    body{
+      min-height:100vh;
+      background:
+        radial-gradient(900px 360px at 10% -20%, rgba(34,211,238,.16), transparent 55%),
+        radial-gradient(900px 420px at 120% -10%, rgba(34,197,94,.12), transparent 52%),
+        linear-gradient(165deg,#070d1b,#0d1528 45%,#13213c);
+      color:#e8f2ff;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:1rem;
+      position:relative;
+      overflow:hidden;
+    }
+    #ambient-bg{
+      position:fixed;
+      inset:0;
+      width:100%;
+      height:100%;
+      z-index:0;
+      pointer-events:none;
+      overflow:hidden;
+    }
+    #ambient-bg .grid{
+      position:absolute;
+      inset:-35%;
+      background-image:
+        linear-gradient(rgba(148,163,184,.06) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(148,163,184,.05) 1px, transparent 1px);
+      background-size:64px 64px;
+      transform:rotate(-8deg);
+      opacity:.16;
+      animation:gridDrift 30s linear infinite;
+    }
+    #ambient-bg .orb{
+      position:absolute;
+      border-radius:50%;
+      filter:blur(34px);
+      opacity:.20;
+      mix-blend-mode:screen;
+    }
+    #ambient-bg .orb-a{
+      width:380px; height:380px;
+      left:-120px; top:-100px;
+      background:radial-gradient(circle at 30% 30%, rgba(103,232,249,.45), rgba(6,24,38,0) 70%);
+      animation:orbA 18s ease-in-out infinite alternate;
+    }
+    #ambient-bg .orb-b{
+      width:320px; height:320px;
+      right:-80px; top:18%;
+      background:radial-gradient(circle at 60% 40%, rgba(45,212,191,.34), rgba(8,27,33,0) 72%);
+      animation:orbB 21s ease-in-out infinite alternate;
+    }
+    #ambient-bg .orb-c{
+      width:280px; height:280px;
+      left:22%; bottom:-120px;
+      background:radial-gradient(circle at 50% 50%, rgba(56,189,248,.30), rgba(5,18,37,0) 74%);
+      animation:orbC 24s ease-in-out infinite alternate;
+    }
+    #binary-fx{
+      position:fixed;
+      inset:0;
+      width:100%;
+      height:100%;
+      pointer-events:none;
+      z-index:1;
+    }
+    .login-card{
+      width:min(460px, 96vw);
+      border:1px solid rgba(125,211,252,.24);
+      border-radius:16px;
+      background:linear-gradient(180deg,rgba(17,27,46,.88),rgba(20,31,54,.96));
+      box-shadow:0 22px 40px rgba(2,6,23,.35);
+      position:relative;
+      z-index:2;
+    }
+    .form-control{
+      border-color:rgba(125,211,252,.28);
+      background:rgba(7,15,31,.74);
+      color:#e8f2ff;
+    }
+    .form-control:focus{
+      border-color:rgba(103,232,249,.7);
+      box-shadow:0 0 0 .2rem rgba(34,211,238,.18);
+      background:rgba(7,15,31,.82);
+      color:#e8f2ff;
+    }
+    .slide-login{
+      position:relative;
+      width:min(220px, 100%);
+      height:40px;
+      margin:0 auto;
+      border-radius:999px;
+      border:1px solid rgba(125,211,252,.42);
+      background:linear-gradient(90deg, rgba(56,189,248,.62), rgba(45,212,191,.60));
+      box-shadow:0 6px 14px rgba(15,23,42,.28), inset 0 0 0 1px rgba(255,255,255,.08);
+      user-select:none;
+      -webkit-user-select:none;
+      touch-action:none;
+      overflow:hidden;
+    }
+    .slide-login__progress{
+      position:absolute;
+      left:0;
+      top:0;
+      height:100%;
+      width:0;
+      border-radius:999px;
+      background:linear-gradient(90deg, rgba(14,116,144,.62), rgba(15,23,42,.12));
+      transition:width .08s linear;
+      pointer-events:none;
+      z-index:1;
+    }
+    .slide-login__label{
+      position:absolute;
+      inset:0;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-weight:600;
+      letter-spacing:.03em;
+      color:#c7e2ea;
+      text-transform:uppercase;
+      text-shadow:0 1px 0 rgba(0,0,0,.24);
+      pointer-events:none;
+      z-index:2;
+      font-size:.74rem;
+    }
+    .slide-login__handle{
+      position:absolute;
+      left:3px;
+      top:3px;
+      width:34px;
+      height:34px;
+      border-radius:999px;
+      border:0;
+      display:grid;
+      place-items:center;
+      background:linear-gradient(180deg,#0c8ba8,#086f8f);
+      color:#fff;
+      box-shadow:0 4px 10px rgba(2,6,23,.38), inset 0 0 0 1px rgba(255,255,255,.15);
+      cursor:grab;
+      z-index:3;
+      transition:transform .16s ease;
+    }
+    .slide-login__handle:active{ cursor:grabbing; }
+    .slide-login__handle i{ font-size:.86rem; }
+    .slide-login.is-disabled{
+      opacity:.62;
+      filter:saturate(.7);
+    }
+    .slide-login.is-disabled .slide-login__handle{
+      cursor:not-allowed;
+      background:linear-gradient(180deg,#4b5563,#374151);
+    }
+    .slide-login.is-unlocked{
+      border-color:rgba(167,243,208,.64);
+      background:linear-gradient(90deg, rgba(20,184,166,.68), rgba(52,211,153,.62));
+    }
+    @keyframes gridDrift{
+      from{ transform:translate3d(0,0,0) rotate(-8deg); }
+      to{ transform:translate3d(-42px,-26px,0) rotate(-8deg); }
+    }
+    @keyframes orbA{
+      from{ transform:translate3d(0,0,0) scale(1); }
+      to{ transform:translate3d(58px,26px,0) scale(1.06); }
+    }
+    @keyframes orbB{
+      from{ transform:translate3d(0,0,0) scale(1); }
+      to{ transform:translate3d(-52px,36px,0) scale(1.08); }
+    }
+    @keyframes orbC{
+      from{ transform:translate3d(0,0,0) scale(1); }
+      to{ transform:translate3d(42px,-30px,0) scale(1.07); }
+    }
+    @media (prefers-reduced-motion: reduce){
+      #ambient-bg .grid,
+      #ambient-bg .orb{
+        animation:none !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="ambient-bg" aria-hidden="true">
+    <div class="grid"></div>
+    <span class="orb orb-a"></span>
+    <span class="orb orb-b"></span>
+    <span class="orb orb-c"></span>
+  </div>
+  <canvas id="binary-fx" aria-hidden="true"></canvas>
+  <div class="login-card p-4">
+    <div class="d-flex align-items-center gap-2 mb-3">
+      <i class="bi bi-shield-lock fs-4"></i>
+      <h1 class="h4 mb-0">Connexion Sgest Panel</h1>
+    </div>
+    {% with messages = get_flashed_messages(with_categories=True) %}
+      {% if messages %}
+        {% for cat, msg in messages %}
+          <div class="alert alert-{{ 'warning' if cat == 'warning' else 'danger' }}" role="alert">{{ msg }}</div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+    {% if weak_default %}
+      <div class="alert alert-warning" role="alert">
+        Mot de passe admin par defaut detecte. Change SGEST_ADMIN_PASSWORD rapidement.
+      </div>
+    {% endif %}
+    <form method="post" action="{{ url_for('login_post') }}" class="row g-3">
+      <input type="hidden" name="_csrf" value="{{ csrf_token() }}">
+      <input type="hidden" name="next" value="{{ next_path or '/' }}">
+      <div class="col-12">
+        <label class="form-label">Utilisateur</label>
+        <input name="username" id="login-username" class="form-control" autocomplete="username" required>
+      </div>
+      <div class="col-12">
+        <label class="form-label">Mot de passe</label>
+        <input name="password" id="login-password" type="password" class="form-control" autocomplete="current-password" required>
+      </div>
+      <div class="col-12">
+        <input type="hidden" name="login_slide" id="login-slide-state" value="0">
+        <div class="slide-login" id="slide-login" aria-label="Glisser pour se connecter">
+          <div class="slide-login__progress" id="slide-login-progress"></div>
+          <div class="slide-login__label" id="slide-login-label">Connexion</div>
+          <button class="slide-login__handle" id="slide-login-handle" type="button" aria-label="Glisser pour valider">
+            <i class="bi bi-lock-fill"></i>
+          </button>
+        </div>
+      </div>
+    </form>
+
+    <hr class="my-3">
+    <div class="small text-secondary mb-2">Mot de passe perdu ?</div>
+    <details class="mb-2">
+      <summary class="small" style="cursor:pointer;">Recevoir un code par email</summary>
+      <form method="post" action="{{ url_for('auth_recovery_request') }}" class="row g-2 mt-2">
+        <input type="hidden" name="_csrf" value="{{ csrf_token() }}">
+        <div class="col-12">
+          <input name="username" class="form-control" placeholder="Utilisateur" required>
+        </div>
+        <div class="col-12">
+          <input name="email" type="email" class="form-control" placeholder="Email de recuperation" required>
+        </div>
+        <div class="col-12 d-grid">
+          <button class="btn btn-outline-light btn-sm" type="submit">Envoyer le code</button>
+        </div>
+      </form>
+    </details>
+
+    <details>
+      <summary class="small" style="cursor:pointer;">Reinitialiser avec le code</summary>
+      <form method="post" action="{{ url_for('auth_recovery_reset') }}" class="row g-2 mt-2">
+        <input type="hidden" name="_csrf" value="{{ csrf_token() }}">
+        <div class="col-12">
+          <input name="username" class="form-control" placeholder="Utilisateur" required>
+        </div>
+        <div class="col-12">
+          <input name="code" class="form-control" placeholder="Code a 6 chiffres" maxlength="6" required>
+        </div>
+        <div class="col-12">
+          <input name="new_password" type="password" class="form-control" placeholder="Nouveau mot de passe" required>
+        </div>
+        <div class="col-12">
+          <input name="confirm_password" type="password" class="form-control" placeholder="Confirmer le mot de passe" required>
+        </div>
+        <div class="col-12 d-grid">
+          <button class="btn btn-outline-light btn-sm" type="submit">Reinitialiser</button>
+        </div>
+      </form>
+    </details>
+  </div>
+  <script>
+    (function(){
+      const form = document.querySelector('form[action="{{ url_for("login_post") }}"]');
+      const slider = document.getElementById("slide-login");
+      const handle = document.getElementById("slide-login-handle");
+      const progress = document.getElementById("slide-login-progress");
+      const state = document.getElementById("login-slide-state");
+      const label = document.getElementById("slide-login-label");
+      const userInput = document.getElementById("login-username");
+      const passInput = document.getElementById("login-password");
+      if (!form || !slider || !handle || !progress || !state || !label || !userInput || !passInput) return;
+
+      let dragging = false;
+      let unlocked = false;
+      let pointerId = null;
+      let currentX = 0;
+
+      function maxX(){
+        return Math.max(0, slider.clientWidth - handle.offsetWidth - 6);
+      }
+
+      function apply(x){
+        currentX = Math.max(0, Math.min(maxX(), x));
+        handle.style.transform = "translateX(" + currentX.toFixed(1) + "px)";
+        progress.style.width = (currentX + handle.offsetWidth * 0.5).toFixed(1) + "px";
+      }
+
+      function reset(){
+        if (unlocked) return;
+        state.value = "0";
+        slider.classList.remove("is-unlocked");
+        handle.innerHTML = '<i class="bi bi-lock-fill"></i>';
+        apply(0);
+        updateReadyState();
+      }
+
+      function unlock(){
+        if (unlocked) return;
+        unlocked = true;
+        state.value = "1";
+        slider.classList.add("is-unlocked");
+        label.textContent = "Valide";
+        handle.innerHTML = '<i class="bi bi-unlock-fill"></i>';
+        handle.disabled = true;
+        apply(maxX());
+        window.setTimeout(function(){
+          if (form.requestSubmit) form.requestSubmit();
+          else form.submit();
+        }, 180);
+      }
+
+      function fieldsReady(){
+        return userInput.value.trim() !== "" && passInput.value.trim() !== "";
+      }
+
+      function updateReadyState(){
+        if (unlocked) return;
+        const ready = fieldsReady();
+        slider.classList.toggle("is-disabled", !ready);
+        handle.disabled = !ready;
+        label.textContent = "Connexion";
+        if (!ready){
+          state.value = "0";
+          apply(0);
+        }
+      }
+
+      function xFromPointer(clientX){
+        const rect = slider.getBoundingClientRect();
+        return clientX - rect.left - (handle.offsetWidth / 2) - 3;
+      }
+
+      handle.addEventListener("pointerdown", function(ev){
+        if (unlocked || !fieldsReady()) return;
+        dragging = true;
+        pointerId = ev.pointerId;
+        try { handle.setPointerCapture(pointerId); } catch(_e){}
+      });
+
+      window.addEventListener("pointermove", function(ev){
+        if (!dragging || unlocked) return;
+        if (pointerId !== null && ev.pointerId !== pointerId) return;
+        apply(xFromPointer(ev.clientX));
+      }, { passive: true });
+
+      function stopDragging(){
+        if (!dragging || unlocked) return;
+        dragging = false;
+        const ratio = maxX() > 0 ? (currentX / maxX()) : 0;
+        if (ratio >= 0.92){
+          unlock();
+        } else {
+          reset();
+        }
+      }
+
+      window.addEventListener("pointerup", stopDragging, { passive: true });
+      window.addEventListener("pointercancel", stopDragging, { passive: true });
+      window.addEventListener("resize", function(){ apply(unlocked ? maxX() : currentX); }, { passive: true });
+      userInput.addEventListener("input", updateReadyState, { passive: true });
+      passInput.addEventListener("input", updateReadyState, { passive: true });
+      reset();
+    })();
+
+    (function(){
+      const canvas = document.getElementById("binary-fx");
+      if (!canvas) return;
+      const reduceMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      if (reduceMotion) return;
+
+      const ctx = canvas.getContext("2d");
+      if (!ctx) return;
+
+      const particles = [];
+      const maxParticles = 260;
+      let lastX = window.innerWidth * 0.5;
+      let lastY = window.innerHeight * 0.5;
+      let lastSpawnAt = 0;
+      let lastFrameAt = 0;
+
+      function resize(){
+        const dpr = Math.max(1, Math.min(2, window.devicePixelRatio || 1));
+        canvas.width = Math.floor(window.innerWidth * dpr);
+        canvas.height = Math.floor(window.innerHeight * dpr);
+        canvas.style.width = window.innerWidth + "px";
+        canvas.style.height = window.innerHeight + "px";
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      }
+
+      function spawn(x, y, amount){
+        const count = Math.max(1, Math.min(10, amount || 4));
+        for (let i = 0; i < count; i++){
+          const speed = 0.25 + Math.random() * 0.9;
+          const angle = (Math.random() * Math.PI * 2);
+          particles.push({
+            x: x + (Math.random() - 0.5) * 24,
+            y: y + (Math.random() - 0.5) * 24,
+            vx: Math.cos(angle) * speed,
+            vy: Math.sin(angle) * speed - 0.2,
+            size: 12 + Math.random() * 8,
+            char: Math.random() < 0.5 ? "0" : "1",
+            life: 520 + Math.random() * 820,
+            born: performance.now()
+          });
+        }
+        if (particles.length > maxParticles){
+          particles.splice(0, particles.length - maxParticles);
+        }
+      }
+
+      function tick(now){
+        const dt = Math.min(34, now - (lastFrameAt || now));
+        lastFrameAt = now;
+
+        ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+        for (let i = particles.length - 1; i >= 0; i--){
+          const p = particles[i];
+          const age = now - p.born;
+          const t = age / p.life;
+          if (t >= 1){
+            particles.splice(i, 1);
+            continue;
+          }
+          p.x += p.vx * dt * 0.06;
+          p.y += p.vy * dt * 0.06;
+          p.vy += 0.0008 * dt;
+          const alpha = 1 - t;
+
+          ctx.font = "700 " + p.size.toFixed(0) + "px ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace";
+          ctx.textAlign = "center";
+          ctx.textBaseline = "middle";
+          ctx.shadowBlur = 14;
+          ctx.shadowColor = "rgba(34, 211, 238, " + (alpha * 0.35).toFixed(3) + ")";
+          ctx.fillStyle = "rgba(167, 243, 208, " + (alpha * 0.85).toFixed(3) + ")";
+          ctx.fillText(p.char, p.x, p.y);
+        }
+        requestAnimationFrame(tick);
+      }
+
+      function onPointerMove(ev){
+        const now = performance.now();
+        if (now - lastSpawnAt < 24) return;
+        const dx = ev.clientX - lastX;
+        const dy = ev.clientY - lastY;
+        lastX = ev.clientX;
+        lastY = ev.clientY;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+        const amount = distance > 36 ? 7 : distance > 18 ? 5 : 3;
+        spawn(ev.clientX, ev.clientY, amount);
+        lastSpawnAt = now;
+      }
+
+      function onPointerDown(ev){
+        spawn(ev.clientX, ev.clientY, 10);
+      }
+
+      resize();
+      window.addEventListener("resize", resize, { passive: true });
+      window.addEventListener("pointermove", onPointerMove, { passive: true });
+      window.addEventListener("pointerdown", onPointerDown, { passive: true });
+      requestAnimationFrame(tick);
+    })();
+  </script>
+</body>
+</html>

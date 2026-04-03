@@ -1,0 +1,1049 @@
+﻿:root{ --sidebar-w:260px; }
+.content{ margin-left:0; padding:16px; }
+body{ padding-top:56px; } /* navbar mobile */
+
+@media (min-width: 992px){
+  body{ padding-top:0 !important; }
+  .sidebar{
+    position:fixed; top:0; bottom:0; left:0;
+    width:var(--sidebar-w); min-height:100vh; padding:24px 16px;
+  }
+  .content{ margin-left:var(--sidebar-w); padding:24px; }
+}
+
+.cards-row > [class*="col-"]{ display:flex; }
+.cards-row .card{ width:100%; }
+.table-responsive{ overflow-x:auto; }
+
+/* Navbar mobile armonisÃ©e */
+.app-navbar{ background:#0e1420 !important; border-bottom:1px solid rgba(255,255,255,.08) !important; }
+.app-navbar .navbar-brand{ color:#e5e7eb !important; }
+
+/* ===== Fix actions â€œTÃ©lÃ©charger / Supprimerâ€ ===== */
+
+/* MÃªme gabarit pour tous les boutons dâ€™action */
+.actions-cell { display:flex; justify-content:flex-end; gap:.5rem; }
+.actions-cell .btn { min-width: 130px; text-align:center; }
+
+/* Aligne lâ€™icÃ´ne ET le texte sur une seule ligne, centrÃ©s */
+.actions-cell .btn-action{
+  display:flex !important;
+  align-items:center;
+  justify-content:center;
+  gap:.5rem;              /* espace entre lâ€™icÃ´ne et le texte */
+  white-space:nowrap;     /* Ã©vite le retour Ã  la ligne de â€œTÃ©lÃ©chargerâ€ */
+  line-height:1.2;
+  padding-top:.5rem;
+  padding-bottom:.5rem;
+}
+.actions-cell .btn-action .bi{
+  display:inline-block !important;
+  margin:0 !important;    /* supprime tout margin-bottom hÃ©ritÃ© */
+}
+
+/* Style â€œoutline blancâ€ lisible sur fond sombre (Download) */
+/* DEPRECATED .table .btn-outline-light,
+/* DEPRECATED .table .btn-outline-light:hover,
+/* DEPRECATED .table .btn-outline-light:focus,
+/* DEPRECATED .table .btn-outline-light:active,
+/* DEPRECATED .table .btn-outline-light.active{
+  color:#e6eefc;                 /* texte blanc froid */
+  border-color:#d6e2ff;          /* bordure claire */
+  background:transparent;
+  box-shadow:none;
+}
+/* DEPRECATED .table .btn-outline-light:hover,
+/* DEPRECATED .table .btn-outline-light:focus{
+  color:#ffffff;
+  border-color:#ffffff;
+  background:#1e293b;            /* lÃ©ger hover sombre */
+}
+
+/* Optionnel : harmoniser le rayon/bordure avec â€œSupprimerâ€ */
+.actions-cell .btn-action{
+  border-width:1px;
+  border-radius:12px;
+}
+
+/* ===== Fix actions â€œTÃ©lÃ©charger / Supprimerâ€ ===== */
+
+/* MÃªme gabarit pour tous les boutons dâ€™action */
+.actions-cell { display:flex; justify-content:flex-end; gap:.5rem; }
+.actions-cell .btn { min-width: 130px; text-align:center; }
+
+/* Aligne lâ€™icÃ´ne ET le texte sur une seule ligne, centrÃ©s */
+.actions-cell .btn-action{
+  display:flex !important;
+  align-items:center;
+  justify-content:center;
+  gap:.5rem;              /* espace entre lâ€™icÃ´ne et le texte */
+  white-space:nowrap;     /* Ã©vite le retour Ã  la ligne de â€œTÃ©lÃ©chargerâ€ */
+  line-height:1.2;
+  padding-top:.5rem;
+  padding-bottom:.5rem;
+}
+.actions-cell .btn-action .bi{
+  display:inline-block !important;
+  margin:0 !important;    /* supprime tout margin-bottom hÃ©ritÃ© */
+}
+
+/* Style â€œoutline blancâ€ lisible sur fond sombre (Download) */
+/* DEPRECATED .table .btn-outline-light,
+/* DEPRECATED .table .btn-outline-light:hover,
+/* DEPRECATED .table .btn-outline-light:focus,
+/* DEPRECATED .table .btn-outline-light:active,
+/* DEPRECATED .table .btn-outline-light.active{
+  color:#e6eefc;                 /* texte blanc froid */
+  border-color:#d6e2ff;          /* bordure claire */
+  background:transparent;
+  box-shadow:none;
+}
+/* DEPRECATED .table .btn-outline-light:hover,
+/* DEPRECATED .table .btn-outline-light:focus{
+  color:#ffffff;
+  border-color:#ffffff;
+  background:#1e293b;            /* lÃ©ger hover sombre */
+}
+
+/* Optionnel : harmoniser le rayon/bordure avec â€œSupprimerâ€ */
+.actions-cell .btn-action{
+  border-width:1px;
+  border-radius:12px;
+}
+
+/* ===== Fix actions â€œTÃ©lÃ©charger / Supprimerâ€ ===== */
+
+/* MÃªme gabarit pour tous les boutons dâ€™action */
+.actions-cell { display:flex; justify-content:flex-end; gap:.5rem; }
+.actions-cell .btn { min-width: 130px; text-align:center; }
+
+/* Aligne lâ€™icÃ´ne ET le texte sur une seule ligne, centrÃ©s */
+.actions-cell .btn-action{
+  display:flex !important;
+  align-items:center;
+  justify-content:center;
+  gap:.5rem;              /* espace entre lâ€™icÃ´ne et le texte */
+  white-space:nowrap;     /* Ã©vite le retour Ã  la ligne de â€œTÃ©lÃ©chargerâ€ */
+  line-height:1.2;
+  padding-top:.5rem;
+  padding-bottom:.5rem;
+}
+.actions-cell .btn-action .bi{
+  display:inline-block !important;
+  margin:0 !important;    /* supprime tout margin-bottom hÃ©ritÃ© */
+}
+
+/* Style â€œoutline blancâ€ lisible sur fond sombre (Download) */
+/* DEPRECATED .table .btn-outline-light,
+/* DEPRECATED .table .btn-outline-light:hover,
+/* DEPRECATED .table .btn-outline-light:focus,
+/* DEPRECATED .table .btn-outline-light:active,
+/* DEPRECATED .table .btn-outline-light.active{
+  color:#e6eefc;                 /* texte blanc froid */
+  border-color:#d6e2ff;          /* bordure claire */
+  background:transparent;
+  box-shadow:none;
+}
+/* DEPRECATED .table .btn-outline-light:hover,
+/* DEPRECATED .table .btn-outline-light:focus{
+  color:#ffffff;
+  border-color:#ffffff;
+  background:#1e293b;            /* lÃ©ger hover sombre */
+}
+
+/* Optionnel : harmoniser le rayon/bordure avec â€œSupprimerâ€ */
+.actions-cell .btn-action{
+  border-width:1px;
+  border-radius:12px;
+}
+
+/* ====== PATCH Actions (TÃ©lÃ©charger blanc, Supprimer rouge, icÃ´ne Ã  droite) ====== */
+.actions-cell{
+  display:flex; justify-content:flex-end; gap:.5rem;
+}
+.actions-cell .btn{
+  min-width:130px; text-align:center; border-radius:10px;
+  display:flex; align-items:center; justify-content:center;
+  gap:.4rem; padding:.45rem .75rem; font-weight:500; line-height:1.2;
+  white-space:nowrap;
+}
+
+/* TÃ©lÃ©charger (blanc) */
+.actions-cell .btn-outline-light{
+  color:#fff !important;
+  border-color:#fff !important;
+  background:transparent !important;
+}
+.actions-cell .btn-outline-light:hover,
+.actions-cell .btn-outline-light:focus{
+  background:rgba(255,255,255,.10) !important;
+  color:#fff !important;
+  border-color:#fff !important;
+  box-shadow:none !important;
+}
+
+/* Supprimer (rouge) */
+.actions-cell .btn-outline-danger{
+  color:#ff4d4f !important;
+  border-color:#ff4d4f !important;
+  background:transparent !important;
+}
+.actions-cell .btn-outline-danger:hover,
+.actions-cell .btn-outline-danger:focus{
+  background:rgba(255,0,0,.15) !important;
+  color:#fff !important;
+  border-color:#ff4d4f !important;
+  box-shadow:none !important;
+}
+
+/* IcÃ´ne Ã  droite du texte (pour .btn-action) */
+.actions-cell .btn-action i{
+  order:2;
+  margin-left:.35rem;
+  margin-right:0 !important;
+}
+
+/* ====== PATCH Actions (TÃ©lÃ©charger blanc, Supprimer rouge, icÃ´ne Ã  droite) ====== */
+.actions-cell{
+  display:flex; justify-content:flex-end; gap:.5rem;
+}
+.actions-cell .btn{
+  min-width:130px; text-align:center; border-radius:10px;
+  display:flex; align-items:center; justify-content:center;
+  gap:.4rem; padding:.45rem .75rem; font-weight:500; line-height:1.2;
+  white-space:nowrap;
+}
+
+/* TÃ©lÃ©charger (blanc) */
+.actions-cell .btn-outline-light{
+  color:#fff !important;
+  border-color:#fff !important;
+  background:transparent !important;
+}
+.actions-cell .btn-outline-light:hover,
+.actions-cell .btn-outline-light:focus{
+  background:rgba(255,255,255,.10) !important;
+  color:#fff !important;
+  border-color:#fff !important;
+  box-shadow:none !important;
+}
+
+/* Supprimer (rouge) */
+.actions-cell .btn-outline-danger{
+  color:#ff4d4f !important;
+  border-color:#ff4d4f !important;
+  background:transparent !important;
+}
+.actions-cell .btn-outline-danger:hover,
+.actions-cell .btn-outline-danger:focus{
+  background:rgba(255,0,0,.15) !important;
+  color:#fff !important;
+  border-color:#ff4d4f !important;
+  box-shadow:none !important;
+}
+
+/* IcÃ´ne Ã  droite du texte (pour .btn-action) */
+.actions-cell .btn-action i{
+  order:2;
+  margin-left:.35rem;
+  margin-right:0 !important;
+}
+
+/* TÃ©lÃ©charger = style rouge (identique Ã  Supprimer) */
+.actions-cell .btn-outline-light {
+  color: #dc3545 !important;              /* rouge texte */
+  border-color: #dc3545 !important;       /* rouge contour */
+  background: transparent !important;
+}
+.actions-cell .btn-outline-light:hover,
+.actions-cell .btn-outline-light:focus {
+  background: #dc3545 !important;         /* rouge fond */
+  border-color: #dc3545 !important;
+  color: #fff !important;                 /* texte blanc au hover */
+}
+
+/* TÃ©lÃ©charger = reste blanc par dÃ©faut, devient rouge au hover */
+.actions-cell .btn-outline-light {
+  color: #fff !important;
+  border-color: #fff !important;
+  background: transparent !important;
+}
+.actions-cell .btn-outline-light:hover,
+.actions-cell .btn-outline-light:focus {
+  color: #fff !important;
+  background: #dc3545 !important;   /* fond rouge */
+  border-color: #dc3545 !important; /* contour rouge */
+}
+
+/* === Bouton "TÃ©lÃ©charger" : style danger + icÃ´ne Ã  droite (override propre) === */
+/* Cible le bouton <a class="btn btn-sm btn-outline-light btn-action"> dans la table */
+.table .actions-cell a.btn.btn-outline-light.btn-action{
+  /* On utilise les variables Bootstrap des boutons pour harmoniser tous les Ã©tats */
+  --bs-btn-color: var(--bs-danger);
+  --bs-btn-border-color: var(--bs-danger);
+  --bs-btn-hover-color: #fff;
+  --bs-btn-hover-bg: var(--bs-danger);
+  --bs-btn-hover-border-color: var(--bs-danger);
+  --bs-btn-active-color: #fff;
+  --bs-btn-active-bg: var(--bs-danger);
+  --bs-btn-active-border-color: var(--bs-danger);
+  --bs-btn-focus-shadow-rgb: var(--bs-danger-rgb);
+
+  /* On s'assure que le rendu prenne bien ces variables */
+  color: var(--bs-btn-color) !important;
+  border-color: var(--bs-btn-border-color) !important;
+
+  /* IcÃ´ne Ã  droite : le .btn est dÃ©jÃ  en display:flex via tes rÃ¨gles -> on inverse lâ€™ordre */
+  flex-direction: row-reverse;
+}
+
+/* Marges de lâ€™icÃ´ne (neutralise .me-1 et ajoute un petit Ã©cart Ã  gauche) */
+.table .actions-cell a.btn.btn-outline-light.btn-action .bi{
+  margin-right: 0 !important;
+  margin-left: .4rem !important;
+}
+
+/* ::::: Actions : TÃ©lÃ©charger (blanc) ::::: */
+/* Cible : <a class="btn btn-sm btn-outline-light btn-action"> */
+.table .actions-cell a.btn.btn-outline-light.btn-action{
+  /* style outline blanc propre */
+  --bs-btn-color: #fff;
+  --bs-btn-border-color: #fff;
+  --bs-btn-hover-color: #fff;
+  --bs-btn-hover-bg: rgba(255,255,255,.10);
+  --bs-btn-hover-border-color: #fff;
+  --bs-btn-active-color: #0e1420;             /* si tu cliques, on peut remplir en clair */
+  --bs-btn-active-bg: #fff;
+  --bs-btn-active-border-color: #fff;
+
+  color: var(--bs-btn-color)!important;
+  border-color: var(--bs-btn-border-color)!important;
+  flex-direction: row;                         /* icÃ´ne Ã  GAUCHE (normal) */
+}
+
+/* ::::: Actions : Supprimer (rouge outline + hover visible) ::::: */
+/* Cible : <button class="btn btn-sm btn-outline-danger btn-del btn-action"> */
+.table .actions-cell .btn-del.btn-outline-danger{
+  --bs-btn-color: var(--bs-danger);
+  --bs-btn-border-color: var(--bs-danger);
+
+  /* Hover lisible mais PAS plein rouge (lÃ©ger fond rouge translucide) */
+  --bs-btn-hover-color: var(--bs-danger);
+  --bs-btn-hover-bg: rgba(var(--bs-danger-rgb), .14);
+  --bs-btn-hover-border-color: var(--bs-danger);
+
+  /* Active (mousedown) : on peut passer en plein rouge + texte blanc */
+  --bs-btn-active-color: #fff;
+  --bs-btn-active-bg: var(--bs-danger);
+  --bs-btn-active-border-color: var(--bs-danger);
+
+  color: var(--bs-btn-color)!important;
+  border-color: var(--bs-btn-border-color)!important;
+  background: transparent!important;
+  flex-direction: row;                         /* icÃ´ne Ã  GAUCHE */
+}
+.table .actions-cell .btn-del.btn-outline-danger .bi{
+  margin-right: .4rem;                         /* petit espace avec le texte */
+  margin-left: 0 !important;
+}
+
+/* (sÃ©curitÃ©) aligne lâ€™icÃ´ne TÃ©lÃ©charger Ã  gauche */
+.table .actions-cell a.btn.btn-outline-light.btn-action .bi{
+  margin-right: .4rem;
+  margin-left: 0 !important;
+}
+
+/* ===== Patch: bouton Supprimer rouge (contour + hover) ===== */
+.table .actions-cell .btn-del.btn-outline-danger{
+  color: var(--bs-danger) !important;
+  border-color: var(--bs-danger) !important;
+  background: transparent !important;
+}
+.table .actions-cell .btn-del.btn-outline-danger:hover{
+  background: rgba(var(--bs-danger-rgb), .14) !important;
+  color: var(--bs-danger) !important;
+  border-color: var(--bs-danger) !important;
+}
+.table .actions-cell .btn-del.btn-outline-danger:active,
+.table .actions-cell .btn-del.btn-outline-danger.active{
+  background: var(--bs-danger) !important;
+  border-color: var(--bs-danger) !important;
+  color: #fff !important;
+}
+
+/* ===== Patch: burger toujours blanc ===== */
+.app-navbar .navbar-toggler-icon{
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='white' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e") !important;
+  background-size: 100% 100% !important;
+  filter: none !important;
+  opacity: 1 !important;
+}
+.app-navbar .navbar-toggler{
+  border-color: rgba(255,255,255,.4) !important;
+  background: rgba(255,255,255,.05) !important;
+}
+.app-navbar .navbar-toggler:hover{
+  background: rgba(255,255,255,.12) !important;
+}
+
+
+.app-navbar .navbar-toggler:focus,
+.app-navbar .navbar-toggler:hover {
+  border-color: rgba(255,255,255,0.55);
+  background: rgba(255,255,255,0.08);
+  box-shadow: 0 0 6px rgba(255,255,255,0.25);
+  outline: none;
+}
+
+/* --- Burger amÃ©liorÃ© --- */
+.app-navbar .navbar-toggler {
+  border: 1px solid rgba(255,255,255,0.25);
+  padding: .35rem .55rem;
+  border-radius: 6px;
+  transition: all .2s ease-in-out;
+}
+
+/* Hover / focus */
+.app-navbar .navbar-toggler:hover {
+  border-color: rgba(255,255,255,0.55);
+  background: rgba(255,255,255,0.08);
+  box-shadow: 0 0 6px rgba(255,255,255,0.25);
+}
+
+/* Supprimer lâ€™Ã©norme contour bleu/blanc aprÃ¨s clic */
+.app-navbar .navbar-toggler:focus,
+.app-navbar .navbar-toggler:active {
+  outline: none !important;
+  box-shadow: 0 0 4px rgba(255,255,255,0.25) !important;
+}
+
+/* ===== Burger: focus ring plus fin ===== */
+.app-navbar.navbar .navbar-toggler {
+  border: 1px solid rgba(255,255,255,.25);
+  padding: .35rem .55rem;
+  border-radius: 6px;
+  transition: all .2s ease-in-out;
+}
+
+/* Hover discret */
+.app-navbar.navbar .navbar-toggler:hover {
+  border-color: rgba(255,255,255,.55);
+  background: rgba(255,255,255,.08);
+  box-shadow: 0 0 6px rgba(255,255,255,.25);
+}
+
+/* Focus/Active: annule lâ€™Ã©norme halo Bootstrap (.25rem) */
+.app-navbar.navbar .navbar-toggler:focus,
+.app-navbar.navbar .navbar-toggler:focus-visible,
+.app-navbar.navbar .navbar-toggler:active {
+  outline: none !important;
+  /* halo trÃ¨s fin et propre */
+  box-shadow: 0 0 0 .10rem rgba(255,255,255,.35) !important;
+}
+
+/* ===== Burger: focus ring affinÃ©/supprimÃ© ===== */
+/* RÃ©duit la largeur par variable Bootstrap ET neutralise box-shadow/outline */
+.app-navbar.navbar .navbar-toggler {
+  --bs-navbar-toggler-focus-width: 0rem; /* tue le gros anneau de BS5 */
+}
+
+/* Ã‰teint tout halo restant (spÃ©cificitÃ© haute + !important) */
+.app-navbar.navbar .navbar-toggler:focus,
+.app-navbar.navbar .navbar-toggler:focus-visible,
+.app-navbar.navbar .navbar-toggler:active,
+.app-navbar.navbar .navbar-toggler[aria-expanded="true"] {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+/* Hover propre (facultatif) */
+.app-navbar.navbar .navbar-toggler:hover {
+  border-color: rgba(255,255,255,.5);
+  background: rgba(255,255,255,.08);
+}
+
+/* === Actions cell â€” responsive tidy === */
+.actions-cell{
+  display:flex;
+  justify-content:flex-end;
+  align-items:center;
+  gap:.5rem;
+  white-space:normal;               /* Ã©vite les dÃ©bordements */
+}
+.actions-cell .btn{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:.35rem;
+  height:36px;                      /* hauteur homogÃ¨ne */
+  padding:.45rem .85rem;
+  min-width:130px;                  /* desktop: taille stable */
+  border-radius:10px;
+}
+
+/* Desktop: la derniÃ¨re colonne Actions garde une largeur fixe confortable */
+.table td:last-child,
+.table th:last-child{
+  width: 210px;
+}
+
+/* <= 1200px : un peu plus compact */
+@media (max-width: 1200px){
+  .table td:last-child,
+  .table th:last-child{ width: 190px; }
+}
+
+/* <= 992px (tablette) : boutons cÃ´te Ã  cÃ´te, mÃªmes largeurs, sans dÃ©bordement */
+@media (max-width: 992px){
+  .actions-cell{
+    justify-content:space-between;
+  }
+  .actions-cell .btn{
+    min-width:0;           /* IMPORTANT: autorise la rÃ©duction */
+    flex:1 1 0;            /* mÃªme largeur pour les deux */
+    text-align:center;
+  }
+  .table td:last-child,
+  .table th:last-child{ width:auto; }  /* laisse la cellule respirer */
+}
+
+/* <= 576px (mobile) : on empile plein largeur */
+@media (max-width: 576px){
+  .actions-cell{
+    flex-direction:column;
+    align-items:stretch;
+    gap:.5rem;
+  }
+  .actions-cell .btn{
+    width:100%;
+    flex:unset;
+    min-width:unset;
+  }
+}
+
+/* ==== Fix alignement boutons Actions (desktop & responsive) ==== */
+
+/* 1) Toujours centrÃ© verticalement dans la ligne */
+.table td, .table th { vertical-align: middle; }
+
+/* 2) Harmonisation stricte des boutons (mÃªme hauteur/line-height) */
+.actions-cell {
+  display:flex;
+  justify-content:flex-end;
+  align-items:center;
+  gap:.5rem;
+}
+.actions-cell .btn{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:.40rem;              /* on ne s'appuie plus sur des margins dâ€™icÃ´ne */
+  height:38px;             /* hauteur unique */
+  line-height:1 !important;
+  padding:.38rem .9rem;    /* padding homogÃ¨ne */
+  border-radius:10px;
+  min-width:130px;
+  white-space:nowrap;
+}
+
+/* 3) IcÃ´nes : zÃ©ro marge -> câ€™est gap qui gÃ¨re lâ€™espacement */
+.actions-cell .btn .bi{
+  margin:0 !important;
+  position:relative; top:0; /* pas de petit dÃ©calage baseline */
+}
+
+/* 4) Supprimer & TÃ©lÃ©charger : pas de shift au hover (bordure identique) */
+.actions-cell .btn-outline-danger,
+.actions-cell .btn-download {
+  border-width:1px;          /* fixe */
+}
+
+/* TÃ©lÃ©charger (contour clair / hover vert plein) : pas de saut */
+.actions-cell .btn-download{
+  border-color:#94a3b8;
+  color:#e5e7eb;
+  background:transparent;
+}
+.actions-cell .btn-download:hover,
+.actions-cell .btn-download:focus{
+  background:#16a34a;        /* vert */
+  border-color:#16a34a;
+  color:#fff;
+  box-shadow:none;
+}
+
+/* Supprimer (contour rouge / hover rouge plein) : pas de saut */
+.actions-cell .btn-outline-danger{
+  color:#f87171;
+  border-color:#f87171;
+  background:transparent;
+}
+.actions-cell .btn-outline-danger:hover,
+.actions-cell .btn-outline-danger:focus{
+  background:#ef4444;
+  border-color:#ef4444;
+  color:#fff;
+  box-shadow:none;
+}
+
+/* 5) Largeurs stables de la colonne Actions (desktop),
+      sans casse quand lâ€™Ã©cran rÃ©trÃ©cit */
+.table td:last-child, .table th:last-child{ width:210px; }
+@media (max-width: 1200px){
+  .table td:last-child, .table th:last-child{ width:190px; }
+}
+@media (max-width: 992px){
+  .table td:last-child, .table th:last-child{ width:auto; }
+  .actions-cell{ justify-content:space-between; }
+  .actions-cell .btn{ min-width:0; flex:1 1 0; }
+}
+@media (max-width: 576px){
+  .actions-cell{ flex-direction:column; align-items:stretch; }
+  .actions-cell .btn{ width:100%; flex:unset; }
+}
+
+
+/* ==== Fix alignement boutons Actions (desktop & responsive) ==== */
+
+/* 1) Toujours centrÃ© verticalement dans la ligne */
+.table td, .table th { vertical-align: middle; }
+
+/* 2) Harmonisation stricte des boutons (mÃªme hauteur/line-height) */
+.actions-cell {
+  display:flex;
+  justify-content:flex-end;
+  align-items:center;
+  gap:.5rem;
+}
+.actions-cell .btn{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:.40rem;              /* on ne s'appuie plus sur des margins dâ€™icÃ´ne */
+  height:38px;             /* hauteur unique */
+  line-height:1 !important;
+  padding:.38rem .9rem;    /* padding homogÃ¨ne */
+  border-radius:10px;
+  min-width:130px;
+  white-space:nowrap;
+}
+
+/* 3) IcÃ´nes : zÃ©ro marge -> câ€™est gap qui gÃ¨re lâ€™espacement */
+.actions-cell .btn .bi{
+  margin:0 !important;
+  position:relative; top:0; /* pas de petit dÃ©calage baseline */
+}
+
+/* 4) Supprimer & TÃ©lÃ©charger : pas de shift au hover (bordure identique) */
+.actions-cell .btn-outline-danger,
+.actions-cell .btn-download {
+  border-width:1px;          /* fixe */
+}
+
+/* TÃ©lÃ©charger (contour clair / hover vert plein) : pas de saut */
+.actions-cell .btn-download{
+  border-color:#94a3b8;
+  color:#e5e7eb;
+  background:transparent;
+}
+.actions-cell .btn-download:hover,
+.actions-cell .btn-download:focus{
+  background:#16a34a;        /* vert */
+  border-color:#16a34a;
+  color:#fff;
+  box-shadow:none;
+}
+
+/* Supprimer (contour rouge / hover rouge plein) : pas de saut */
+.actions-cell .btn-outline-danger{
+  color:#f87171;
+  border-color:#f87171;
+  background:transparent;
+}
+.actions-cell .btn-outline-danger:hover,
+.actions-cell .btn-outline-danger:focus{
+  background:#ef4444;
+  border-color:#ef4444;
+  color:#fff;
+  box-shadow:none;
+}
+
+/* 5) Largeurs stables de la colonne Actions (desktop),
+      sans casse quand lâ€™Ã©cran rÃ©trÃ©cit */
+.table td:last-child, .table th:last-child{ width:210px; }
+@media (max-width: 1200px){
+  .table td:last-child, .table th:last-child{ width:190px; }
+}
+@media (max-width: 992px){
+  .table td:last-child, .table th:last-child{ width:auto; }
+  .actions-cell{ justify-content:space-between; }
+  .actions-cell .btn{ min-width:0; flex:1 1 0; }
+}
+@media (max-width: 576px){
+  .actions-cell{ flex-direction:column; align-items:stretch; }
+  .actions-cell .btn{ width:100%; flex:unset; }
+}
+
+
+/* === System table hard fix (archives) === */
+#bk-table{ table-layout: fixed; width:100%; border-collapse:separate; border-spacing:0; }
+#bk-table th, #bk-table td{ vertical-align: middle; }
+
+/* On interdit le wrap partout... */
+#bk-table th, #bk-table td{ white-space: nowrap; }
+
+/* ...sauf sur la 1Ã¨re colonne (nom de fichier) que l'on tronque joliment */
+#bk-table td:first-child, #bk-table th:first-child{
+  white-space: nowrap;            /* pas de retours automatiques */
+  overflow: hidden;               /* on masque le surplus */
+  text-overflow: ellipsis;        /* ... avec ellipsis */
+}
+
+/* Colonne Actions : flex + largeur mini pour garder les boutons alignÃ©s */
+#bk-table td:nth-child(4){
+  width:260px; min-width:260px;
+}
+#bk-table .actions-cell{
+  display:flex; align-items:center; justify-content:flex-end;
+  gap:.5rem; white-space:nowrap;
+}
+
+/* La zone responsive doit scroller horizontalement si nÃ©cessaire */
+.table-responsive{ overflow-x:auto; }
+
+/* Petites adaptations selon la largeur */
+@media (max-width: 1200px){
+  #bk-table td:nth-child(4){ width:240px; min-width:240px; }
+}
+@media (max-width: 992px){
+  #bk-table td:nth-child(4){ width:230px; min-width:230px; }
+}
+@media (max-width: 768px){
+  /* Sur trÃ¨s petit Ã©cran: on garde le scroll plutÃ´t que casser les boutons */
+  #bk-table td:nth-child(4){ width:220px; min-width:220px; }
+}
+/* === end System table hard fix === */
+
+
+/* === Fix header Actions (column alignment) === */
+#bk-table{
+  table-layout: fixed;            /* same width calc for thead/tbody */
+  width: 100%;
+}
+#bk-table th, #bk-table td{
+  padding-left: 12px;
+  padding-right: 12px;            /* identical padding header/body */
+  vertical-align: middle;
+}
+#bk-table th.actions-col{
+  text-align: right !important;
+  width: 260px; min-width: 260px; /* must match colgroup */
+  padding-right: 16px;            /* tiny nudge to match buttons */
+}
+/* Keep the body actions aligned to the right */
+#bk-table td:last-child .actions-cell{
+  display: flex;
+  justify-content: flex-end;
+  gap: .5rem;
+}
+
+/* Responsive widths mirroring your actions button stack */
+@media (max-width: 1200px){
+  #bk-table th.actions-col{ width: 240px; min-width: 240px; }
+}
+@media (max-width: 992px){
+  #bk-table th.actions-col{ width: 230px; min-width: 230px; }
+}
+@media (max-width: 768px){
+  #bk-table th.actions-col{ width: 220px; min-width: 220px; }
+}
+/* === end Fix header Actions === */
+
+/* === Hard align Actions column ========================================== */
+/* Verrouille le layout : mÃªme largeur pour thead/tbody */
+#bk-table{ table-layout: fixed; width:100%; }
+#bk-table thead th{ white-space: nowrap; }
+
+/* Largeur par dÃ©faut (desktop) */
+#bk-table thead th.actions-col{ width:260px !important; min-width:260px !important; text-align:right; }
+#bk-table tbody td:last-child{ width:260px !important; min-width:260px !important; }
+
+/* Ajustements responsives : mirror exact pour thead et tbody */
+@media (max-width: 1200px){
+  #bk-table thead th.actions-col{ width:240px !important; min-width:240px !important; }
+  #bk-table tbody td:last-child{  width:240px !important; min-width:240px !important; }
+}
+@media (max-width: 992px){
+  #bk-table thead th.actions-col{ width:230px !important; min-width:230px !important; }
+  #bk-table tbody td:last-child{  width:230px !important; min-width:230px !important; }
+}
+@media (max-width: 768px){
+  #bk-table thead th.actions-col{ width:220px !important; min-width:220px !important; }
+  #bk-table tbody td:last-child{  width:220px !important; min-width:220px !important; }
+}
+
+/* MÃªme padding pour header et lignes, sinon dÃ©calage visuel */
+#bk-table th, #bk-table td{ padding-left:12px; padding-right:12px; }
+#bk-table th.actions-col{ padding-right:16px; } /* petit nudge Ã  droite */
+
+/* Les boutons restent alignÃ©s Ã  droite Ã  lâ€™intÃ©rieur de la cellule */
+#bk-table td:last-child .actions-cell{
+  display:flex; justify-content:flex-end; gap:.5rem;
+}
+/* === end Hard align Actions column ====================================== */
+
+/* === System table fixed widths (Actions toujours alignÃ©e) === */
+#bk-table { table-layout: fixed; width: 100%; }
+#bk-table th, #bk-table td { vertical-align: middle; }
+
+/* Colonnes: 1=Archive  2=Taille  3=Date  4=Actions */
+#bk-table th:nth-child(2), #bk-table td:nth-child(2) { width: 120px; } /* Taille */
+#bk-table th:nth-child(3), #bk-table td:nth-child(3) { width: 220px; } /* Date */
+#bk-table th:nth-child(4), #bk-table td:nth-child(4) { width: 260px; } /* Actions */
+
+@media (max-width: 1199.98px){
+  #bk-table th:nth-child(2), #bk-table td:nth-child(2) { width: 110px; }
+  #bk-table th:nth-child(3), #bk-table td:nth-child(3) { width: 200px; }
+  #bk-table th:nth-child(4), #bk-table td:nth-child(4) { width: 240px; }
+}
+@media (max-width: 991.98px){
+  #bk-table th:nth-child(2), #bk-table td:nth-child(2) { width: 100px; }
+  #bk-table th:nth-child(3), #bk-table td:nth-child(3) { width: 190px; }
+  #bk-table th:nth-child(4), #bk-table td:nth-child(4) { width: 230px; }
+}
+@media (max-width: 767.98px){
+  #bk-table th:nth-child(2), #bk-table td:nth-child(2) { width: 90px; }
+  #bk-table th:nth-child(3), #bk-table td:nth-child(3) { width: 180px; }
+  #bk-table th:nth-child(4), #bk-table td:nth-child(4) { width: 220px; }
+}
+
+/* Boutons bien collÃ©s Ã  droite dans la derniÃ¨re colonne */
+#bk-table td:last-child .actions-cell {
+  display: flex;
+  justify-content: flex-end;
+  gap: .5rem;
+}
+/* === end System table fixed widths =========================== */
+
+/* ====== INVENTAIRE MODERNE ====== */
+.inv-modern .glass{
+  background: rgba(255,255,255,0.02);
+  border: 1px solid rgba(255,255,255,0.05) !important;
+  backdrop-filter: blur(6px);
+}
+.inv-modern .inv-table th{
+  letter-spacing:.02em;
+}
+@media (max-width: 768px){
+  .inv-modern .inv-table td:last-child{
+    position: sticky;
+    right: 0;
+    background: rgba(16,20,24,.8);
+    backdrop-filter: blur(4px);
+  }
+}
+.inventory-form .btn-ajouter:hover {
+  background-color: #218838 !important;
+  border-color: #1e7e34 !important;
+}
+
+/* Flash messages */
+.alert-success {
+  background-color: #1e4620 !important;
+  border: 1px solid #28a745 !important;
+  color: #d4edda !important;
+}
+
+.alert-danger {
+  background-color: #3a1a1a !important;
+  border: 1px solid #dc3545 !important;
+  color: #f8d7da !important;
+}
+.inventory-form .btn-ajouter:hover{
+  background-color:#218838!important;
+  border-color:#1e7e34!important;
+}
+
+/* Flash messages */
+.alert-success{
+  background-color:#1e4620!important;
+  border:1px solid #28a745!important;
+  color:#d4edda!important;
+}
+.alert-danger{
+  background-color:#3a1a1a!important;
+  border:1px solid #dc3545!important;
+  color:#f8d7da!important;
+}
+/* Inventory polish */
+.badge-soft{
+  background: rgba(255,255,255,.06);
+  border: 1px solid rgba(255,255,255,.12);
+  color: rgba(255,255,255,.85);
+  font-weight: 600;
+  letter-spacing:.02em;
+  padding:.2rem .55rem;
+  border-radius:999px;
+  font-size:.78rem;
+}
+
+.table-inventory thead th{
+  background: rgba(255,255,255,.04);
+  border-bottom:1px solid rgba(255,255,255,.08)!important;
+  color:#cfd8e3;
+  font-weight:700;
+}
+.table-inventory tbody tr{
+  border-bottom:1px solid rgba(255,255,255,.06);
+}
+.table-inventory td,.table-inventory th{
+  vertical-align:middle!important;
+}
+
+@media (max-width: 991.98px){
+  .actions-sticky{
+    position: sticky;
+    right: 0;
+    background: rgba(13,18,28,.85);
+    backdrop-filter: blur(4px);
+  }
+}
+
+.select-muted{
+  background: rgba(255,255,255,.03);
+  border:1px solid rgba(255,255,255,.08);
+}
+.select-muted:focus{
+  border-color: rgba(255,255,255,.16);
+  box-shadow: 0 0 0 .2rem rgba(40,167,69,.15);
+}
+
+/* placeholders â€œvideâ€ sur la droite */
+.inventory-empty{
+  border:1px dashed rgba(255,255,255,.12);
+  border-radius:.75rem;
+  color:#9aa7b5;
+}
+
+/* TonalitÃ© plus douce des boutons â€œSupprimerâ€ */
+.btn-outline-danger{
+  border-color:#dc3545!important;
+  color:#f8d7da!important;
+}
+.btn-outline-danger:hover{
+  background:#dc3545!important;
+  color:#fff!important;
+}
+/* btn-ajouter: reprend style Bootstrap "btn-success" */
+.inventory-form .btn-ajouter {
+  @extend .btn-success;
+}
+
+/* Bouton Ajouter harmonisÃ© */
+.inventory-form .btn-ajouter {
+  background-color: #3ba55d !important;  /* vert harmonisÃ© */
+  border-color: #2d7d46 !important;
+  color: #fff !important;
+  font-weight: 600;
+}
+.inventory-form .btn-ajouter:hover {
+  background-color: #2d7d46 !important;
+  border-color: #256c3b !important;
+}
+
+/* Bouton Ajouter harmonisÃ© */
+.inventory-form .btn-ajouter {
+  background-color: #3ba55d !important;  /* vert harmonisÃ© */
+  border-color: #2d7d46 !important;
+  color: #fff !important;
+  font-weight: 600;
+}
+.inventory-form .btn-ajouter:hover {
+  background-color: #2d7d46 !important;
+  border-color: #256c3b !important;
+}
+
+/* btn-ajouter harmonise */
+.btn-ajouter{
+  font-weight:600;
+}
+/* inventory search icon */
+#inv-search{
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%238a94a6'><path d='M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85zm-5.242.656a5.5 5.5 0 1 1 0-11 5.5 5.5 0 0 1 0 11z'/></svg>");
+  background-repeat: no-repeat;
+  background-position: 12px center;
+  background-size: 16px 16px;
+  padding-left: 2.2rem; /* laisse la place pour l'icÃ´ne */
+}
+
+/* cache les listes dÃ©roulantes du bandeau d'outils de l'inventaire */
+.inv-toolbar .form-select{ display:none !important; }
+/* sur Ã©crans Ã©troits il peut y avoir une autre classe utilitaire */
+#content .inv-toolbar select.form-select{ display:none !important; }
+/* inventory search icon */
+#inv-search{
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%238a94a6'><path d='M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85zm-5.242.656a5.5 5.5 0 1 1 0-11 5.5 5.5 0 0 1 0 11z'/></svg>");
+  background-repeat: no-repeat;
+  background-position: 12px center;
+  background-size: 16px 16px;
+  padding-left: 2.2rem; /* laisse la place pour l'icÃ´ne */
+}
+
+/* cache les listes dÃ©roulantes du bandeau d'outils de l'inventaire */
+.inv-toolbar .form-select{ display:none !important; }
+/* sur Ã©crans Ã©troits il peut y avoir une autre classe utilitaire */
+#content .inv-toolbar select.form-select{ display:none !important; }
+#inv-search { padding-left: 2.25rem !important; }
+/* sÃ©curitÃ© : si des <select> trainent encore dans la toolbar, on les masque */
+.inv-toolbar select.form-select { display: none !important; }
+/* inv-search-svg */
+.inv-search .inv-search-addon{
+  background: transparent !important;
+  border-color: var(--bs-border-color-translucent, rgba(255,255,255,.15)) !important;
+  color: rgba(255,255,255,.6) !important;
+}
+.inv-search .inv-search-input{
+  border-color: var(--bs-border-color-translucent, rgba(255,255,255,.15)) !important;
+  background-color: var(--bs-body-bg, #0b1220) !important;
+  color: var(--bs-body-color, #e9ecef) !important;
+}
+.inv-search .inv-search-input::placeholder{ color: rgba(255,255,255,.45); }
+.inv-search .inv-search-input:focus{
+  box-shadow: 0 0 0 .2rem rgba(13,110,253,.15) !important;
+  border-color: rgba(255,255,255,.25) !important;
+}
+@media (max-width: 576px){
+  .inv-search .inv-search-input{ font-size: .95rem; }
+}
+/* inv-search-svg */
+.inv-search .inv-search-addon{
+  background: transparent !important;
+  border-color: var(--bs-border-color-translucent, rgba(255,255,255,.15)) !important;
+  color: rgba(255,255,255,.6) !important;
+}
+.inv-search .inv-search-input{
+  border-color: var(--bs-border-color-translucent, rgba(255,255,255,.15)) !important;
+  background-color: var(--bs-body-bg, #0b1220) !important;
+  color: var(--bs-body-color, #e9ecef) !important;
+}
+.inv-search .inv-search-input::placeholder{ color: rgba(255,255,255,.45); }
+.inv-search .inv-search-input:focus{
+  box-shadow: 0 0 0 .2rem rgba(13,110,253,.15) !important;
+  border-color: rgba(255,255,255,.25) !important;
+}
+@media (max-width: 576px){
+  .inv-search .inv-search-input{ font-size: .95rem; }
+}
+
+/* remove native search icon */
+input[type="search"]::-webkit-search-decoration,
+input[type="search"]::-webkit-search-cancel-button,
+input[type="search"]::-webkit-search-results-button,
+input[type="search"]::-webkit-search-results-decoration {
+  -webkit-appearance: none;
+}
+
+input[type="search"] {
+  -moz-appearance: textfield; /* Firefox */
+}
+

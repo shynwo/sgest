@@ -1,0 +1,444 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container py-3">
+  <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+    <div>
+      <h2 class="h4 mb-1">Calculateur de benefice</h2>
+      <p class="text-secondary mb-0">Broderie et Impression 3D avec URSSAF 21%.</p>
+    </div>
+    <span class="badge rounded-pill px-3 py-2 text-bg-warning">URSSAF 21%</span>
+  </div>
+
+  <div class="row g-3">
+    <div class="col-12 col-xl-6">
+      <div class="card h-100">
+        <div class="card-body">
+          <h5 class="card-title mb-3"><i class="bi bi-scissors me-2"></i>Broderie</h5>
+
+          {% if bro_products %}
+          <div class="row g-3">
+            <div class="col-12">
+              <label class="form-label">Produit (depuis ton stock Broderie)</label>
+              <select id="bro-product" class="form-select">
+                {% for it in bro_products %}
+                <option value="{{ it.id }}"
+                        data-price="{{ '%.6f'|format(it.price or 0) }}"
+                        data-qty="{{ it.qty or 0 }}">
+                  {{ (it.name or 'Produit') }} | {{ it.material or '-' }} | {{ it.color or '-' }} | ref {{ it.ref or '-' }} | stock {{ it.qty or 0 }} | {{ '%.2f'|format(it.price or 0) }} EUR
+                </option>
+                {% endfor %}
+              </select>
+              <div id="bro-stock-hint" class="small text-secondary mt-1"></div>
+              <div id="bro-stock-warning" class="small text-warning mt-1 d-none"></div>
+            </div>
+
+            <div class="col-6">
+              <label class="form-label">Prix de vente / piece (EUR)</label>
+              <input id="bro-sell" type="number" min="0" step="0.01" class="form-control" value="25">
+            </div>
+            <div class="col-6">
+              <label class="form-label">Nombre de pieces</label>
+              <input id="bro-qty" type="number" min="1" step="1" class="form-control" value="1">
+            </div>
+
+            <div class="col-6">
+              <label class="form-label">Nb broderies / piece</label>
+              <input id="bro-emb-count" type="number" min="0" step="1" class="form-control" value="1">
+            </div>
+            <div class="col-6">
+              <label class="form-label">Type broderie</label>
+              <select id="bro-mode" class="form-select">
+                <option value="mono">Mono couleur (6.50 EUR)</option>
+                <option value="multi">Multi couleur (8.00 EUR)</option>
+              </select>
+            </div>
+
+            <div class="col-6">
+              <label class="form-label">Machine (EUR)</label>
+              <input id="bro-machine-cost" type="number" min="0" step="0.01" class="form-control" value="1100">
+            </div>
+            <div class="col-6">
+              <label class="form-label">Pieces pour amortir la machine</label>
+              <input id="bro-machine-units" type="number" min="1" step="1" class="form-control" value="1000">
+            </div>
+
+            <div class="col-12">
+              <div class="small text-secondary">
+                Electricite calculee automatiquement dans le prix.
+              </div>
+              <div class="small text-secondary" id="bro-elec-one">
+                Cout electrique estime pour 1 broderie: 0.00 EUR
+              </div>
+            </div>
+          </div>
+
+          <div class="calc-result mt-3">
+            <div class="calc-row"><span>Chiffre d'affaires</span><strong id="bro-revenue">0.00 EUR</strong></div>
+            <div class="calc-row"><span>Cout produit (stock)</span><strong id="bro-material-cost">0.00 EUR</strong></div>
+            <div class="calc-row"><span>Cout broderie</span><strong id="bro-op-cost">0.00 EUR</strong></div>
+            <div class="calc-row"><span>Amortissement machine</span><strong id="bro-amortization">0.00 EUR</strong></div>
+            <div class="calc-row"><span>Electricite estimee (auto)</span><strong id="bro-electricity-total">0.00 EUR</strong></div>
+            <div class="calc-row"><span>URSSAF (21%)</span><strong id="bro-urssaf">0.00 EUR</strong></div>
+            <div class="calc-row calc-row-net"><span>Benefice net</span><strong id="bro-net">0.00 EUR</strong></div>
+            <div class="small text-secondary mt-1" id="bro-margin">Marge nette: 0%</div>
+          </div>
+          {% else %}
+          <div class="alert alert-warning mb-0">
+            Aucun produit dans le stock Broderie. Ajoute d'abord un article.
+          </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+    <div class="col-12 col-xl-6">
+      <div class="card h-100">
+        <div class="card-body">
+          <h5 class="card-title mb-3"><i class="bi bi-diagram-3 me-2"></i>Impression 3D</h5>
+
+          {% if spools %}
+          <div class="row g-3">
+            <div class="col-6">
+              <label class="form-label">Type impression</label>
+              <select id="imp-mode" class="form-select">
+                <option value="mono">Mono couleur</option>
+                <option value="multi">Multi couleur</option>
+              </select>
+            </div>
+            <div class="col-6">
+              <label class="form-label">Nombre de pieces</label>
+              <input id="imp-qty" type="number" min="1" step="1" class="form-control" value="1">
+            </div>
+
+            <div class="col-12">
+              <label class="form-label">Prix de vente / piece (EUR)</label>
+              <input id="imp-sell" type="number" min="0" step="0.01" class="form-control" value="20">
+            </div>
+
+            <div class="col-12">
+              <div class="d-flex justify-content-between align-items-center mb-2">
+                <label class="form-label mb-0">Bobine(s) depuis ton stock 3D</label>
+                <button id="add-spool-row" type="button" class="btn btn-sm btn-outline-primary">
+                  <i class="bi bi-plus-circle me-1"></i>Ajouter bobine
+                </button>
+              </div>
+              <div id="spool-rows" class="d-grid gap-2">
+                <div class="spool-row calc-subcard">
+                  <div class="row g-2 align-items-end">
+                    <div class="col-12 col-md-7">
+                      <label class="form-label">Bobine</label>
+                      <select class="form-select spool-select">
+                        {% for s in spools %}
+                        <option value="{{ s.id }}"
+                                data-price="{{ '%.6f'|format(s.price or 0) }}"
+                                data-qty="{{ s.qty or 0 }}">
+                          {{ (s.name or 'Bobine') }} | {{ s.material or '-' }} | {{ s.color or '-' }} | stock {{ s.qty or 0 }} | {{ '%.2f'|format(s.price or 0) }} EUR
+                        </option>
+                        {% endfor %}
+                      </select>
+                    </div>
+                    <div class="col-8 col-md-3">
+                      <label class="form-label">Gramme / piece</label>
+                      <input type="number" min="0" step="0.1" class="form-control spool-grams" value="0">
+                    </div>
+                    <div class="col-4 col-md-2">
+                      <button type="button" class="btn btn-outline-danger w-100 btn-remove-spool">
+                        <i class="bi bi-x-lg"></i>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <template id="spool-row-template">
+                <div class="spool-row calc-subcard">
+                  <div class="row g-2 align-items-end">
+                    <div class="col-12 col-md-7">
+                      <label class="form-label">Bobine</label>
+                      <select class="form-select spool-select">
+                        {% for s in spools %}
+                        <option value="{{ s.id }}"
+                                data-price="{{ '%.6f'|format(s.price or 0) }}"
+                                data-qty="{{ s.qty or 0 }}">
+                          {{ (s.name or 'Bobine') }} | {{ s.material or '-' }} | {{ s.color or '-' }} | stock {{ s.qty or 0 }} | {{ '%.2f'|format(s.price or 0) }} EUR
+                        </option>
+                        {% endfor %}
+                      </select>
+                    </div>
+                    <div class="col-8 col-md-3">
+                      <label class="form-label">Gramme / piece</label>
+                      <input type="number" min="0" step="0.1" class="form-control spool-grams" value="0">
+                    </div>
+                    <div class="col-4 col-md-2">
+                      <button type="button" class="btn btn-outline-danger w-100 btn-remove-spool">
+                        <i class="bi bi-x-lg"></i>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </template>
+            </div>
+
+            <div class="col-6">
+              <label class="form-label">Machine (EUR)</label>
+              <input id="imp-machine-cost" type="number" min="0" step="0.01" class="form-control" value="1000">
+            </div>
+            <div class="col-6">
+              <label class="form-label">Pieces pour amortir la machine</label>
+              <input id="imp-machine-units" type="number" min="1" step="1" class="form-control" value="600">
+            </div>
+
+            <div class="col-12">
+              <label class="form-label">Electricite totale commande (EUR)</label>
+              <input id="imp-electricity" type="number" min="0" step="0.01" class="form-control" value="0">
+            </div>
+          </div>
+
+          <div class="calc-result mt-3">
+            <div class="calc-row"><span>Chiffre d'affaires</span><strong id="imp-revenue">0.00 EUR</strong></div>
+            <div class="calc-row"><span>Cout bobines</span><strong id="imp-material-cost">0.00 EUR</strong></div>
+            <div class="calc-row"><span>Grammage total / piece</span><strong id="imp-grams-per-piece">0 g</strong></div>
+            <div class="calc-row"><span>Amortissement machine</span><strong id="imp-amortization">0.00 EUR</strong></div>
+            <div class="calc-row"><span>Electricite</span><strong id="imp-electricity-total">0.00 EUR</strong></div>
+            <div class="calc-row"><span>URSSAF (21%)</span><strong id="imp-urssaf">0.00 EUR</strong></div>
+            <div class="calc-row calc-row-net"><span>Benefice net</span><strong id="imp-net">0.00 EUR</strong></div>
+            <div class="small text-secondary mt-1" id="imp-margin">Marge nette: 0%</div>
+          </div>
+          {% else %}
+          <div class="alert alert-warning mb-0">
+            Aucune bobine dans le stock Impression 3D. Ajoute d'abord un article.
+          </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+.calc-result{
+  border:1px solid rgba(148,163,184,.25);
+  border-radius:12px;
+  padding:.8rem .9rem;
+  background:rgba(5,11,23,.32);
+}
+.calc-row{
+  display:flex;
+  justify-content:space-between;
+  gap:1rem;
+  border-bottom:1px dashed rgba(148,163,184,.2);
+  padding:.38rem 0;
+}
+.calc-row:last-child{
+  border-bottom:0;
+}
+.calc-row-net strong{
+  color:#86efac;
+  font-size:1.08rem;
+}
+.calc-subcard{
+  border:1px solid rgba(148,163,184,.2);
+  border-radius:10px;
+  padding:.55rem;
+  background:rgba(255,255,255,.02);
+}
+</style>
+
+<script>
+(function(){
+  const URSSAF_RATE = 0.21;
+  // Estimation electrique broderie basee sur sources:
+  // - machine a broder ~150W
+  // - 1 broderie ~10 min
+  // - prix variable electricite ~0.1899 EUR/kWh
+  const BRO_ELEC_MACHINE_W = 150;
+  const BRO_ELEC_MIN_PER_EMB = 10;
+  const BRO_ELEC_KWH_PRICE = 0.1899;
+  const BRO_ELEC_COST_PER_EMB =
+    (BRO_ELEC_MACHINE_W / 1000) * (BRO_ELEC_MIN_PER_EMB / 60) * BRO_ELEC_KWH_PRICE;
+  const el = (id) => document.getElementById(id);
+  const toNum = (v) => {
+    const n = parseFloat(String(v ?? "").replace(",", "."));
+    return Number.isFinite(n) ? n : 0;
+  };
+  const money = (v) => `${toNum(v).toLocaleString("fr-FR", {minimumFractionDigits:2, maximumFractionDigits:2})} EUR`;
+  const money3 = (v) => `${toNum(v).toLocaleString("fr-FR", {minimumFractionDigits:3, maximumFractionDigits:3})} EUR`;
+
+  function setText(id, value){
+    const node = el(id);
+    if (node) node.textContent = value;
+  }
+
+  function bindMany(ids, fn){
+    ids.forEach((id) => {
+      const node = el(id);
+      if (!node) return;
+      node.addEventListener("input", fn);
+      node.addEventListener("change", fn);
+    });
+  }
+
+  function calcBroderie(){
+    const product = el("bro-product");
+    if (!product) return;
+
+    const opt = product.options[product.selectedIndex];
+    const productPrice = toNum(opt?.dataset.price);
+    const stockQty = toNum(opt?.dataset.qty);
+    const qty = Math.max(1, toNum(el("bro-qty")?.value));
+    const sell = Math.max(0, toNum(el("bro-sell")?.value));
+    const embCount = Math.max(0, toNum(el("bro-emb-count")?.value));
+    const mode = el("bro-mode")?.value === "multi" ? "multi" : "mono";
+    const rate = mode === "multi" ? 8.0 : 6.5;
+    const machineCost = Math.max(0, toNum(el("bro-machine-cost")?.value));
+    const machineUnits = Math.max(1, toNum(el("bro-machine-units")?.value));
+    const totalEmb = embCount * qty;
+    const electricity = totalEmb * BRO_ELEC_COST_PER_EMB;
+
+    const revenue = sell * qty;
+    const materialCost = productPrice * qty;
+    const opCost = embCount * rate * qty;
+    const amortization = (machineCost / machineUnits) * qty;
+    const urssaf = revenue * URSSAF_RATE;
+    const totalCost = materialCost + opCost + amortization + electricity;
+    const net = revenue - totalCost - urssaf;
+    const marginPct = revenue > 0 ? (net / revenue) * 100 : 0;
+
+    setText("bro-revenue", money(revenue));
+    setText("bro-material-cost", money(materialCost));
+    setText("bro-op-cost", money(opCost));
+    setText("bro-amortization", money(amortization));
+    setText("bro-electricity-total", money3(electricity));
+    setText("bro-elec-one", `Cout electrique estime pour 1 broderie: ${money3(BRO_ELEC_COST_PER_EMB)}`);
+    setText("bro-urssaf", money(urssaf));
+    setText("bro-net", money(net));
+    setText("bro-margin", `Marge nette: ${marginPct.toLocaleString("fr-FR", {minimumFractionDigits:1, maximumFractionDigits:1})}%`);
+    setText("bro-stock-hint", `Stock disponible sur cet article: ${stockQty}`);
+
+    const warning = el("bro-stock-warning");
+    if (warning){
+      if (qty > stockQty){
+        warning.textContent = "Attention: quantite a produire > stock disponible.";
+        warning.classList.remove("d-none");
+      } else {
+        warning.classList.add("d-none");
+      }
+    }
+  }
+
+  function getSpoolRows(){
+    return Array.from(document.querySelectorAll("#spool-rows .spool-row"));
+  }
+
+  function syncSpoolUi(){
+    const mode = el("imp-mode")?.value || "mono";
+    const addBtn = el("add-spool-row");
+    let rows = getSpoolRows();
+
+    if (rows.length === 0){
+      addSpoolRow();
+      rows = getSpoolRows();
+    }
+
+    if (mode === "mono"){
+      rows.slice(1).forEach((row) => row.remove());
+      if (addBtn) addBtn.classList.add("d-none");
+    } else {
+      if (addBtn) addBtn.classList.remove("d-none");
+    }
+
+    rows = getSpoolRows();
+    rows.forEach((row, idx) => {
+      const btn = row.querySelector(".btn-remove-spool");
+      if (!btn) return;
+      btn.disabled = (rows.length === 1) || (mode === "mono");
+    });
+  }
+
+  function addSpoolRow(){
+    const wrap = el("spool-rows");
+    const tpl = el("spool-row-template");
+    if (!wrap || !tpl) return;
+    wrap.appendChild(tpl.content.cloneNode(true));
+    syncSpoolUi();
+    calcImpression3D();
+  }
+
+  function calcImpression3D(){
+    if (!el("imp-sell")) return;
+
+    const qty = Math.max(1, toNum(el("imp-qty")?.value));
+    const sell = Math.max(0, toNum(el("imp-sell")?.value));
+    const machineCost = Math.max(0, toNum(el("imp-machine-cost")?.value));
+    const machineUnits = Math.max(1, toNum(el("imp-machine-units")?.value));
+    const electricity = Math.max(0, toNum(el("imp-electricity")?.value));
+
+    let gramsPerPiece = 0;
+    let materialPerPiece = 0;
+
+    getSpoolRows().forEach((row) => {
+      const select = row.querySelector(".spool-select");
+      const gramsInput = row.querySelector(".spool-grams");
+      const grams = Math.max(0, toNum(gramsInput?.value));
+      const opt = select?.options[select.selectedIndex];
+      const spoolPrice = toNum(opt?.dataset.price);
+
+      gramsPerPiece += grams;
+      materialPerPiece += (grams * spoolPrice) / 1000;
+    });
+
+    const revenue = sell * qty;
+    const materialCost = materialPerPiece * qty;
+    const amortization = (machineCost / machineUnits) * qty;
+    const urssaf = revenue * URSSAF_RATE;
+    const totalCost = materialCost + amortization + electricity;
+    const net = revenue - totalCost - urssaf;
+    const marginPct = revenue > 0 ? (net / revenue) * 100 : 0;
+
+    setText("imp-revenue", money(revenue));
+    setText("imp-material-cost", money(materialCost));
+    setText("imp-grams-per-piece", `${gramsPerPiece.toLocaleString("fr-FR", {minimumFractionDigits:0, maximumFractionDigits:1})} g`);
+    setText("imp-amortization", money(amortization));
+    setText("imp-electricity-total", money(electricity));
+    setText("imp-urssaf", money(urssaf));
+    setText("imp-net", money(net));
+    setText("imp-margin", `Marge nette: ${marginPct.toLocaleString("fr-FR", {minimumFractionDigits:1, maximumFractionDigits:1})}%`);
+  }
+
+  bindMany([
+    "bro-product", "bro-sell", "bro-qty", "bro-emb-count", "bro-mode",
+    "bro-machine-cost", "bro-machine-units"
+  ], calcBroderie);
+  calcBroderie();
+
+  bindMany([
+    "imp-mode", "imp-qty", "imp-sell", "imp-machine-cost", "imp-machine-units", "imp-electricity"
+  ], () => {
+    syncSpoolUi();
+    calcImpression3D();
+  });
+
+  const addBtn = el("add-spool-row");
+  if (addBtn){
+    addBtn.addEventListener("click", addSpoolRow);
+  }
+
+  const rowsWrap = el("spool-rows");
+  if (rowsWrap){
+    rowsWrap.addEventListener("click", (e) => {
+      const btn = e.target.closest(".btn-remove-spool");
+      if (!btn) return;
+      const rows = getSpoolRows();
+      if (rows.length <= 1) return;
+      btn.closest(".spool-row")?.remove();
+      syncSpoolUi();
+      calcImpression3D();
+    });
+    rowsWrap.addEventListener("input", calcImpression3D);
+    rowsWrap.addEventListener("change", calcImpression3D);
+  }
+
+  syncSpoolUi();
+  calcImpression3D();
+})();
+</script>
+{% endblock %}
