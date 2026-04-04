@@ -37,7 +37,7 @@ def create_app() -> Flask:
     app.errorhandler(404)(svc.not_found)
     app.errorhandler(500)(svc.server_error)
 
-    from .routes import register_routes
+    from .views import register_routes
 
     register_routes(app)
 

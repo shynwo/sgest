@@ -1901,3 +1901,9 @@ def _webhook_receive(source: str):
     payload = _webhook_payload()
     order_id = _save_order_notification(source, payload)
     return jsonify(ok=True, id=order_id)
+
+
+# Les vues font « from .services import * » : sans __all__, Python n’importe pas les noms commençant par « _ ».
+__all__ = sorted(
+    n for n in list(globals()) if not (n.startswith("__") and n.endswith("__"))
+)
