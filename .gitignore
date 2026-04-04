@@ -21,6 +21,9 @@ data/**/*.db
 # Sauvegardes / bruit
 .bak_*/
 app.py.bak.*
+# Copies locales éditeur / scripts (ex. base.html.bak.2025-11-01)
+*.bak
+*.bak.*
 =
 *.log
 
