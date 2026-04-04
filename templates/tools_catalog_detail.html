@@ -16,15 +16,15 @@
       <p class="text-secondary mb-0">{{ catalog.description or 'Aucune description.' }}</p>
     </div>
     <div class="d-flex flex-wrap gap-2">
-      <a href="{{ url_for('tools_catalogs_page') }}" class="btn btn-outline-secondary btn-sm">Tous les catalogues</a>
-      <form method="post" action="{{ url_for('tools_catalog_toggle_public', catalog_id=catalog.id) }}" class="d-inline">
+      <a href="{{ url_for('tools.tools_catalogs_page') }}" class="btn btn-outline-secondary btn-sm">Tous les catalogues</a>
+      <form method="post" action="{{ url_for('tools.tools_catalog_toggle_public', catalog_id=catalog.id) }}" class="d-inline">
         <input type="hidden" name="_csrf" value="{{ csrf_token() }}">
         <input type="hidden" name="is_public" value="{{ 0 if catalog.is_public else 1 }}">
         <button class="btn btn-sm {{ 'btn-outline-danger' if catalog.is_public else 'btn-outline-primary' }}" type="submit">
           {{ 'Desactiver le partage public' if catalog.is_public else 'Activer le partage public' }}
         </button>
       </form>
-      <form method="post" action="{{ url_for('tools_catalog_delete', catalog_id=catalog.id) }}" class="d-inline" onsubmit="return confirm('Supprimer ce catalogue et toutes ses fiches ?');">
+      <form method="post" action="{{ url_for('tools.tools_catalog_delete', catalog_id=catalog.id) }}" class="d-inline" onsubmit="return confirm('Supprimer ce catalogue et toutes ses fiches ?');">
         <input type="hidden" name="_csrf" value="{{ csrf_token() }}">
         <button class="btn btn-outline-danger btn-sm" type="submit">Supprimer le catalogue</button>
       </form>
@@ -47,7 +47,7 @@
       <div class="card h-100">
         <div class="card-body">
           <h5 class="card-title mb-3">Nouvelle fiche produit</h5>
-          <form method="post" action="{{ url_for('tools_catalog_item_add', catalog_id=catalog.id) }}" enctype="multipart/form-data" class="row g-3">
+          <form method="post" action="{{ url_for('tools.tools_catalog_item_add', catalog_id=catalog.id) }}" enctype="multipart/form-data" class="row g-3">
             <input type="hidden" name="_csrf" value="{{ csrf_token() }}">
             <div class="col-12">
               <label class="form-label">Titre produit</label>
@@ -111,15 +111,15 @@
                     </div>
                     <div class="small text-secondary">SKU: {{ it.sku or '-' }} | Prix: {{ '%.2f'|format(it.price or 0) }} EUR</div>
                   </div>
-                  <form method="post" action="{{ url_for('tools_catalog_item_delete', catalog_id=catalog.id, item_id=it.id) }}" onsubmit="return confirm('Supprimer cette fiche ?');">
+                  <form method="post" action="{{ url_for('tools.tools_catalog_item_delete', catalog_id=catalog.id, item_id=it.id) }}" onsubmit="return confirm('Supprimer cette fiche ?');">
                     <input type="hidden" name="_csrf" value="{{ csrf_token() }}">
                     <button type="submit" class="btn btn-sm btn-outline-danger">Supprimer</button>
                   </form>
                 </div>
                 {% if it.cover %}
                 <div class="mt-2">
-                  <a href="{{ url_for('tools_catalog_file', file_id=it.cover.id) }}" target="_blank" rel="noopener">
-                    <img src="{{ url_for('tools_catalog_file', file_id=it.cover.id) }}" alt="Apercu {{ it.title }}" class="item-cover">
+                  <a href="{{ url_for('tools.tools_catalog_file', file_id=it.cover.id) }}" target="_blank" rel="noopener">
+                    <img src="{{ url_for('tools.tools_catalog_file', file_id=it.cover.id) }}" alt="Apercu {{ it.title }}" class="item-cover">
                   </a>
                 </div>
                 {% endif %}
@@ -139,14 +139,14 @@
                     <div class="file-chip d-flex justify-content-between align-items-center gap-2">
                       <div class="text-truncate d-flex align-items-center gap-2">
                         {% if f.is_image %}
-                        <img class="mini-thumb" src="{{ url_for('tools_catalog_file', file_id=f.id) }}" alt="Apercu {{ f.original_name }}">
+                        <img class="mini-thumb" src="{{ url_for('tools.tools_catalog_file', file_id=f.id) }}" alt="Apercu {{ f.original_name }}">
                         {% endif %}
                         <div class="text-truncate">
-                          <a href="{{ url_for('tools_catalog_file', file_id=f.id) }}" target="_blank" rel="noopener">{{ f.original_name }}</a>
+                          <a href="{{ url_for('tools.tools_catalog_file', file_id=f.id) }}" target="_blank" rel="noopener">{{ f.original_name }}</a>
                         </div>
                       </div>
                       <div class="small text-secondary ms-auto me-2">{{ f.file_kind }} | {{ f.size_bytes }} bytes</div>
-                      <form method="post" action="{{ url_for('tools_catalog_file_delete', catalog_id=catalog.id, file_id=f.id) }}" onsubmit="return confirm('Supprimer ce fichier ?');">
+                      <form method="post" action="{{ url_for('tools.tools_catalog_file_delete', catalog_id=catalog.id, file_id=f.id) }}" onsubmit="return confirm('Supprimer ce fichier ?');">
                         <input type="hidden" name="_csrf" value="{{ csrf_token() }}">
                         <button class="btn btn-sm btn-outline-danger" type="submit"><i class="bi bi-trash"></i></button>
                       </form>

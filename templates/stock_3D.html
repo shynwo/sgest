@@ -14,7 +14,7 @@
   <div class="card mb-4">
     <div class="card-body">
       <h5 class="card-title mb-3">Ajouter un produit</h5>
-      <form method="post" action="{{ url_for('inv_3d_add') }}" class="row g-3">
+      <form method="post" action="{{ url_for('stock.inv_3d_add') }}" class="row g-3">
         <div class="col-12 col-lg-4">
           <label class="form-label">Nom</label>
           <input name="name" class="form-control" placeholder="Nom du produit">
@@ -120,20 +120,20 @@
               <td>{{ "%.2f"|format(it.price or 0) }} €</td>
               <td class="col-stock">
                 <div class="d-inline-flex align-items-center gap-1">
-                  <form method="post" action="{{ url_for('inv_3d_bump', item_id=it.id) }}" class="d-inline">
+                  <form method="post" action="{{ url_for('stock.inv_3d_bump', item_id=it.id) }}" class="d-inline">
                     <input type="hidden" name="delta" value="-1">
                     <button class="btn btn-outline-secondary btn-sm px-2" title="Retirer 1">−</button>
                   </form>
                   <span class="badge rounded-pill qty-badge {{ 'text-bg-primary' if low else 'text-bg-secondary' }}">{{ '%.3f'|format(it.qty or 0) }}</span>
                   <span class="small text-secondary">{{ ((it.qty or 0) * 1000)|round(0)|int }} g</span>
-                  <form method="post" action="{{ url_for('inv_3d_bump', item_id=it.id) }}" class="d-inline">
+                  <form method="post" action="{{ url_for('stock.inv_3d_bump', item_id=it.id) }}" class="d-inline">
                     <input type="hidden" name="delta" value="1">
                     <button class="btn btn-outline-secondary btn-sm px-2" title="Ajouter 1">+</button>
                   </form>
                 </div>
               </td>
               <td class="text-end col-actions">
-                <form method="post" action="{{ url_for('inv_3d_del', item_id=it.id) }}" class="d-inline" onsubmit="return confirm('Supprimer cet article ?');">
+                <form method="post" action="{{ url_for('stock.inv_3d_del', item_id=it.id) }}" class="d-inline" onsubmit="return confirm('Supprimer cet article ?');">
                   <button class="btn btn-outline-danger btn-sm" title="Supprimer"><i class="bi bi-trash"></i></button>
                 </form>
               </td>

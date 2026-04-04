@@ -15,7 +15,7 @@
       <div class="text-secondary small">Cree ton propre stock pour n'importe quel business (champs, variantes, seuils, export).</div>
     </div>
     {% if active_module %}
-      <a class="btn btn-outline-secondary btn-sm" href="{{ url_for('tools_custom_export_csv', module_id=active_module.id) }}">
+      <a class="btn btn-outline-secondary btn-sm" href="{{ url_for('tools.tools_custom_export_csv', module_id=active_module.id) }}">
         <i class="bi bi-download me-1"></i>Export CSV
       </a>
     {% endif %}
@@ -26,7 +26,7 @@
       <div class="card">
         <div class="card-body">
           <h5 class="card-title mb-3">Nouvelle gestion</h5>
-          <form method="post" action="{{ url_for('tools_custom_module_add') }}" class="row g-2">
+          <form method="post" action="{{ url_for('tools.tools_custom_module_add') }}" class="row g-2">
             <input type="hidden" name="_csrf" value="{{ csrf_token() }}">
             <div class="col-12">
               <label class="form-label">Nom</label>
@@ -57,13 +57,13 @@
               {% for m in modules %}
                 <div class="module-pill p-2 rounded {% if active_module and m.id == active_module.id %}module-pill-active{% endif %}">
                   <div class="d-flex justify-content-between align-items-center gap-2">
-                    <a class="text-decoration-none flex-grow-1" href="{{ url_for('tools_custom_stock_page', m=m.id) }}">
+                    <a class="text-decoration-none flex-grow-1" href="{{ url_for('tools.tools_custom_stock_page', m=m.id) }}">
                       <div class="fw-semibold">{{ m.name }}</div>
                       <div class="small text-secondary">
                         {{ m.items_count }} refs | {{ m.fields_count }} champs | {{ '%.2f'|format(m.units_total or 0) }} unites
                       </div>
                     </a>
-                    <form method="post" action="{{ url_for('tools_custom_module_delete', module_id=m.id) }}" onsubmit="return confirm('Supprimer cette gestion ?');">
+                    <form method="post" action="{{ url_for('tools.tools_custom_module_delete', module_id=m.id) }}" onsubmit="return confirm('Supprimer cette gestion ?');">
                       <input type="hidden" name="_csrf" value="{{ csrf_token() }}">
                       <button class="btn btn-outline-danger btn-sm" type="submit" title="Supprimer">
                         <i class="bi bi-trash"></i>
@@ -105,7 +105,7 @@
         <div class="card mb-3">
           <div class="card-body">
             <h5 class="card-title mb-3">Champs personnalises</h5>
-            <form method="post" action="{{ url_for('tools_custom_field_add', module_id=active_module.id) }}" class="row g-2 align-items-end mb-3">
+            <form method="post" action="{{ url_for('tools.tools_custom_field_add', module_id=active_module.id) }}" class="row g-2 align-items-end mb-3">
               <input type="hidden" name="_csrf" value="{{ csrf_token() }}">
               <div class="col-12 col-md-4">
                 <label class="form-label">Libelle</label>
@@ -170,7 +170,7 @@
                         <td>{{ 'Oui' if f.is_required else 'Non' }}</td>
                         <td>{{ 'Oui' if f.show_in_table else 'Non' }}</td>
                         <td class="text-end">
-                          <form method="post" action="{{ url_for('tools_custom_field_delete', module_id=active_module.id, field_id=f.id) }}" onsubmit="return confirm('Supprimer ce champ ?');">
+                          <form method="post" action="{{ url_for('tools.tools_custom_field_delete', module_id=active_module.id, field_id=f.id) }}" onsubmit="return confirm('Supprimer ce champ ?');">
                             <input type="hidden" name="_csrf" value="{{ csrf_token() }}">
                             <button class="btn btn-outline-danger btn-sm" type="submit"><i class="bi bi-trash"></i></button>
                           </form>
@@ -189,7 +189,7 @@
         <div class="card mb-3">
           <div class="card-body">
             <h5 class="card-title mb-3">Ajouter un article</h5>
-            <form method="post" action="{{ url_for('tools_custom_item_add', module_id=active_module.id) }}" class="row g-2">
+            <form method="post" action="{{ url_for('tools.tools_custom_item_add', module_id=active_module.id) }}" class="row g-2">
               <input type="hidden" name="_csrf" value="{{ csrf_token() }}">
               <div class="col-12 col-md-4">
                 <label class="form-label">Nom</label>
@@ -253,12 +253,12 @@
           <div class="card-body">
             <div class="d-flex justify-content-between align-items-center gap-2 mb-3 flex-wrap">
               <h5 class="card-title mb-0">Articles</h5>
-              <form method="get" action="{{ url_for('tools_custom_stock_page') }}" class="d-flex gap-2">
+              <form method="get" action="{{ url_for('tools.tools_custom_stock_page') }}" class="d-flex gap-2">
                 <input type="hidden" name="m" value="{{ active_module.id }}">
                 <input name="q" class="form-control form-control-sm" style="min-width:220px" placeholder="Rechercher..." value="{{ search_q }}">
                 <button class="btn btn-outline-secondary btn-sm" type="submit">Filtrer</button>
                 {% if search_q %}
-                  <a class="btn btn-outline-light btn-sm" href="{{ url_for('tools_custom_stock_page', m=active_module.id) }}">Reset</a>
+                  <a class="btn btn-outline-light btn-sm" href="{{ url_for('tools.tools_custom_stock_page', m=active_module.id) }}">Reset</a>
                 {% endif %}
               </form>
             </div>
@@ -290,13 +290,13 @@
                         <td>{{ '%.2f'|format(it.price or 0) }} EUR</td>
                         <td>
                           <div class="d-inline-flex align-items-center gap-1">
-                            <form method="post" action="{{ url_for('tools_custom_item_bump', module_id=active_module.id, item_id=it.id) }}">
+                            <form method="post" action="{{ url_for('tools.tools_custom_item_bump', module_id=active_module.id, item_id=it.id) }}">
                               <input type="hidden" name="_csrf" value="{{ csrf_token() }}">
                               <input type="hidden" name="delta" value="-1">
                               <button class="btn btn-outline-secondary btn-sm px-2" type="submit">-</button>
                             </form>
                             <span class="badge text-bg-secondary">{{ it.qty_display }}</span>
-                            <form method="post" action="{{ url_for('tools_custom_item_bump', module_id=active_module.id, item_id=it.id) }}">
+                            <form method="post" action="{{ url_for('tools.tools_custom_item_bump', module_id=active_module.id, item_id=it.id) }}">
                               <input type="hidden" name="_csrf" value="{{ csrf_token() }}">
                               <input type="hidden" name="delta" value="1">
                               <button class="btn btn-outline-secondary btn-sm px-2" type="submit">+</button>
@@ -305,7 +305,7 @@
                         </td>
                         <td>{{ it.min_qty_display }}</td>
                         <td class="text-end">
-                          <form method="post" action="{{ url_for('tools_custom_item_delete', module_id=active_module.id, item_id=it.id) }}" onsubmit="return confirm('Supprimer cet article ?');">
+                          <form method="post" action="{{ url_for('tools.tools_custom_item_delete', module_id=active_module.id, item_id=it.id) }}" onsubmit="return confirm('Supprimer cet article ?');">
                             <input type="hidden" name="_csrf" value="{{ csrf_token() }}">
                             <button class="btn btn-outline-danger btn-sm" type="submit"><i class="bi bi-trash"></i></button>
                           </form>

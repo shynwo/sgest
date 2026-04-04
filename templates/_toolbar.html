@@ -24,7 +24,7 @@
       <span id="badge-orders" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-primary d-none">0</span>
     </a>
     {% if is_authenticated %}
-    <form method="post" action="{{ url_for('logout') }}" class="d-inline">
+    <form method="post" action="{{ url_for('auth.logout') }}" class="d-inline">
       <input type="hidden" name="_csrf" value="{{ csrf_token() }}">
       <button class="btn btn-sm btn-outline-light" type="submit" title="Deconnexion" aria-label="Deconnexion">
         <i class="bi bi-box-arrow-right"></i>

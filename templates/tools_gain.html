@@ -15,10 +15,10 @@
       <p class="text-secondary mb-0">Pilotage ventes/pertes avec impact stock en temps reel.</p>
     </div>
     <div class="d-flex flex-wrap gap-2">
-      <a class="btn btn-sm {{ 'btn-primary' if period=='day' else 'btn-outline-secondary' }}" href="{{ url_for('tools_gain_page', period='day') }}">Jour</a>
-      <a class="btn btn-sm {{ 'btn-primary' if period=='week' else 'btn-outline-secondary' }}" href="{{ url_for('tools_gain_page', period='week') }}">Semaine</a>
-      <a class="btn btn-sm {{ 'btn-primary' if period=='month' else 'btn-outline-secondary' }}" href="{{ url_for('tools_gain_page', period='month') }}">Mois</a>
-      <a class="btn btn-sm btn-outline-light" href="{{ url_for('tools_gain_export_csv', period=period) }}">
+      <a class="btn btn-sm {{ 'btn-primary' if period=='day' else 'btn-outline-secondary' }}" href="{{ url_for('tools.tools_gain_page', period='day') }}">Jour</a>
+      <a class="btn btn-sm {{ 'btn-primary' if period=='week' else 'btn-outline-secondary' }}" href="{{ url_for('tools.tools_gain_page', period='week') }}">Semaine</a>
+      <a class="btn btn-sm {{ 'btn-primary' if period=='month' else 'btn-outline-secondary' }}" href="{{ url_for('tools.tools_gain_page', period='month') }}">Mois</a>
+      <a class="btn btn-sm btn-outline-light" href="{{ url_for('tools.tools_gain_export_csv', period=period) }}">
         <i class="bi bi-download me-1"></i>Export CSV
       </a>
     </div>
@@ -36,7 +36,7 @@
       <div class="card h-100">
         <div class="card-body">
           <h5 class="card-title mb-3">Nouveau mouvement</h5>
-          <form method="post" action="{{ url_for('tools_gain_record') }}" class="row g-3" id="gain-form">
+          <form method="post" action="{{ url_for('tools.tools_gain_record') }}" class="row g-3" id="gain-form">
             <input type="hidden" name="period" value="{{ period }}">
 
             <div class="col-6">
@@ -109,7 +109,7 @@
         <div class="card-body">
           <div class="d-flex justify-content-between align-items-center gap-2">
             <h5 class="card-title mb-0">Article le plus rentable</h5>
-            <form method="post" action="{{ url_for('tools_gain_reset') }}" onsubmit="return confirm('Vider tout l historique des gains ?');">
+            <form method="post" action="{{ url_for('tools.tools_gain_reset') }}" onsubmit="return confirm('Vider tout l historique des gains ?');">
               <input type="hidden" name="period" value="{{ period }}">
               <button class="btn btn-sm btn-outline-danger" type="submit">Vider historique</button>
             </form>

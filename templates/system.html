@@ -120,7 +120,7 @@
               <td>{{ b.date }}</td>
               <td class="text-end actions-col">
                 <div class="actions-wrap">
-                  <a class="btn btn-sm btn-outline-light" href="{{ url_for('download_backup', name=b.name) }}">
+                  <a class="btn btn-sm btn-outline-light" href="{{ url_for('system.download_backup', name=b.name) }}">
                     <i class="bi bi-download me-1"></i>Telecharger
                   </a>
                   <button class="btn btn-sm btn-outline-danger btn-del" data-name="{{ b.name }}">

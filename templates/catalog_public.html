@@ -57,8 +57,8 @@
             <span class="badge text-bg-secondary">{{ it.status }}</span>
           </div>
           {% if it.cover %}
-          <a class="d-block mt-2" href="{{ url_for('catalog_public_file', token=catalog.public_token, file_id=it.cover.id) }}" target="_blank" rel="noopener">
-            <img class="cover" src="{{ url_for('catalog_public_file', token=catalog.public_token, file_id=it.cover.id) }}" alt="Visuel {{ it.title }}">
+          <a class="d-block mt-2" href="{{ url_for('catalog_public.catalog_public_file', token=catalog.public_token, file_id=it.cover.id) }}" target="_blank" rel="noopener">
+            <img class="cover" src="{{ url_for('catalog_public.catalog_public_file', token=catalog.public_token, file_id=it.cover.id) }}" alt="Visuel {{ it.title }}">
           </a>
           {% endif %}
           <div class="small text-secondary mt-1">Prix: {{ '%.2f'|format(it.price or 0) }} EUR</div>
@@ -69,9 +69,9 @@
           {% if it.files %}
           <div class="mt-3 d-grid gap-1">
             {% for f in it.files %}
-            <a class="btn btn-sm btn-outline-light text-start d-flex align-items-center gap-2 text-truncate" href="{{ url_for('catalog_public_file', token=catalog.public_token, file_id=f.id) }}" target="_blank" rel="noopener">
+            <a class="btn btn-sm btn-outline-light text-start d-flex align-items-center gap-2 text-truncate" href="{{ url_for('catalog_public.catalog_public_file', token=catalog.public_token, file_id=f.id) }}" target="_blank" rel="noopener">
               {% if f.is_image %}
-              <img class="thumb" src="{{ url_for('catalog_public_file', token=catalog.public_token, file_id=f.id) }}" alt="Apercu {{ f.original_name }}">
+              <img class="thumb" src="{{ url_for('catalog_public.catalog_public_file', token=catalog.public_token, file_id=f.id) }}" alt="Apercu {{ f.original_name }}">
               {% endif %}
               <span class="text-truncate">{{ f.original_name }}</span>
             </a>

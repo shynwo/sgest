@@ -1,5 +1,10 @@
 #!/usr/bin/env python3
-"""Découpe sgest/routes.py en sgest/views/*.py (une fois)."""
+"""Découpe sgest/routes.py en sgest/views/*.py (intermédiaire).
+
+Ensuite : python tools/views_to_blueprints.py pour produire sgest/blueprints/.
+Les templates utilisent des endpoints préfixés (ex. auth.login) ; après régénération
+depuis un monolithe, exécuter aussi tools/apply_blueprint_url_for.py.
+"""
 from __future__ import annotations
 
 from pathlib import Path

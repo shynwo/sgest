@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """
 Extrait app.py en sgest/services.py (helpers + hooks) et sgest/routes.py (register_routes).
-Ensuite, pour découper les routes : python tools/split_routes_to_views.py
+Pipeline optionnel : python tools/split_routes_to_views.py puis python tools/views_to_blueprints.py
+(puis tools/apply_blueprint_url_for.py si les templates repassent aux noms courts).
 À exécuter depuis la racine du dépôt : python tools/build_sgest_package.py
 """
 from __future__ import annotations

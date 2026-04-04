@@ -1443,15 +1443,15 @@ def security_gate():
 
     endpoint = request.endpoint or ""
     public_endpoints = {
-        "login",
-        "login_post",
-        "auth_recovery_request",
-        "auth_recovery_reset",
-        "webhook_orders_etsy",
-        "webhook_orders_vinted",
-        "catalog_public_page",
-        "catalog_public_file",
-        "ping",
+        "auth.login",
+        "auth.login_post",
+        "auth.auth_recovery_request",
+        "auth.auth_recovery_reset",
+        "webhooks.webhook_orders_etsy",
+        "webhooks.webhook_orders_vinted",
+        "catalog_public.catalog_public_page",
+        "catalog_public.catalog_public_file",
+        "main.ping",
         "static",
     }
     if endpoint == "static" or endpoint.startswith("static"):
@@ -1462,15 +1462,20 @@ def security_gate():
     if not _session_is_authenticated():
         if _is_api_request():
             return jsonify(ok=False, error="auth_required"), 401
-        return redirect(url_for("login", next=request.path))
+        return redirect(url_for("auth.login", next=request.path))
     if not _current_auth_user():
         session.clear()
         if _is_api_request():
             return jsonify(ok=False, error="auth_required"), 401
-        return redirect(url_for("login", next=request.path))
+        return redirect(url_for("auth.login", next=request.path))
 
     if request.method in ("POST", "PUT", "PATCH", "DELETE"):
-        csrf_exempt = {"login", "login_post", "webhook_orders_etsy", "webhook_orders_vinted"}
+        csrf_exempt = {
+            "auth.login",
+            "auth.login_post",
+            "webhooks.webhook_orders_etsy",
+            "webhooks.webhook_orders_vinted",
+        }
         if endpoint not in csrf_exempt:
             sent = (
                 (request.form.get("_csrf") or "").strip()

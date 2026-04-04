@@ -216,7 +216,7 @@
         Mot de passe admin par defaut detecte. Change SGEST_ADMIN_PASSWORD rapidement.
       </div>
     {% endif %}
-    <form method="post" action="{{ url_for('login_post') }}" class="row g-3">
+    <form method="post" action="{{ url_for('auth.login_post') }}" class="row g-3">
       <input type="hidden" name="_csrf" value="{{ csrf_token() }}">
       <input type="hidden" name="next" value="{{ next_path or '/' }}">
       <div class="col-12">
@@ -243,7 +243,7 @@
     <div class="small text-secondary mb-2">Mot de passe perdu ?</div>
     <details class="mb-2">
       <summary class="small" style="cursor:pointer;">Recevoir un code par email</summary>
-      <form method="post" action="{{ url_for('auth_recovery_request') }}" class="row g-2 mt-2">
+      <form method="post" action="{{ url_for('auth.auth_recovery_request') }}" class="row g-2 mt-2">
         <input type="hidden" name="_csrf" value="{{ csrf_token() }}">
         <div class="col-12">
           <input name="username" class="form-control" placeholder="Utilisateur" required>
@@ -259,7 +259,7 @@
 
     <details>
       <summary class="small" style="cursor:pointer;">Reinitialiser avec le code</summary>
-      <form method="post" action="{{ url_for('auth_recovery_reset') }}" class="row g-2 mt-2">
+      <form method="post" action="{{ url_for('auth.auth_recovery_reset') }}" class="row g-2 mt-2">
         <input type="hidden" name="_csrf" value="{{ csrf_token() }}">
         <div class="col-12">
           <input name="username" class="form-control" placeholder="Utilisateur" required>
@@ -281,7 +281,7 @@
   </div>
   <script>
     (function(){
-      const form = document.querySelector('form[action="{{ url_for("login_post") }}"]');
+      const form = document.querySelector('form[action="{{ url_for("auth.login_post") }}"]');
       const slider = document.getElementById("slide-login");
       const handle = document.getElementById("slide-login-handle");
       const progress = document.getElementById("slide-login-progress");

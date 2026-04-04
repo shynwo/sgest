@@ -21,7 +21,7 @@
       <div class="card h-100">
         <div class="card-body">
           <h5 class="card-title mb-3">Nouveau catalogue</h5>
-          <form method="post" action="{{ url_for('tools_catalogs_add') }}" class="row g-3">
+          <form method="post" action="{{ url_for('tools.tools_catalogs_add') }}" class="row g-3">
             <input type="hidden" name="_csrf" value="{{ csrf_token() }}">
             <div class="col-12">
               <label class="form-label">Nom du catalogue</label>
@@ -69,7 +69,7 @@
                 <div class="small text-secondary mt-2">{{ c.description or 'Aucune description.' }}</div>
                 <div class="d-flex justify-content-between align-items-center mt-3">
                   <span class="small text-secondary">{{ c.items_count }} fiche(s) | {{ c.files_count }} fichier(s)</span>
-                  <a href="{{ url_for('tools_catalog_detail_page', catalog_id=c.id) }}" class="btn btn-sm btn-outline-primary">Ouvrir</a>
+                  <a href="{{ url_for('tools.tools_catalog_detail_page', catalog_id=c.id) }}" class="btn btn-sm btn-outline-primary">Ouvrir</a>
                 </div>
               </div>
             </div>
